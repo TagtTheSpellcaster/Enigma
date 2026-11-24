@@ -5,7 +5,6 @@
 ![HTML5](https://img.shields.io/badge/HTML5-E34F26?logo=html5&logoColor=white)
 ![CSS3](https://img.shields.io/badge/CSS3-1572B6?logo=css3&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/JavaScript-Vanilla-F7DF1E?logo=javascript&logoColor=black)
-![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Ready-222222?logo=github)
 
 Un emulatore interattivo, storicamente e crittograficamente fedele, delle celebri macchine cifranti elettromeccaniche **Enigma M3** (usata dall'esercito tedesco) ed **Enigma M4** (usata dai sommergibili U-Boot della marina tedesca). Realizzato in un unico file autosufficiente senza librerie esterne, pensato per la didattica, la divulgazione storica e lo studio della crittografia.
 
