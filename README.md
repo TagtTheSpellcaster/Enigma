@@ -67,6 +67,7 @@ Scegliendo 3 rotori su 5 disponibili, impostandone le posizioni iniziali, gli an
 I comandanti tedeschi distribuivano ogni mese un **libro delle chiavi** (*Schlüsselzettel*), un foglio stampato con inchiostro rosso solubile in acqua (così da poterlo distruggere in un secchio d'acqua in caso di cattura). Su questo foglio era scritta la **chiave del giorno**: quali rotori montare, su quali lettere posizionarli all'inizio della giornata e quali cavi collegare.
 
 ![Foglio cifrario (n. A297185) del 1940, adattato per i gruppi di quattro lettere impiegati nella procedura manuale di riserva (RHV)](./Schl%C3%BCsselzettel.png)
+
 *Foglio cifrario (n. A297185) del 1940, adattato per i gruppi di quattro lettere impiegati nella procedura manuale di riserva (RHV).*
 
 * **Enigma M3 (Wehrmacht — Esercito e Aviazione):** Utilizzava **3 rotori** scelti tra 5 disponibili (`I–V`) e un riflettore standard (`UKW-B` o `UKW-C`). I messaggi venivano trasmessi in codice Morse divisi in gruppi di **5 lettere** (*Fünfergruppen*).
