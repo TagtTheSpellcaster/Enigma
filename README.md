@@ -1,14 +1,13 @@
 # Emulatore Storico Enigma M3 & M4
 
-![Version](https://img.shields.io/badge/version-1.0-blue.svg)
-![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)
-![HTML5](https://img.shields.io/badge/HTML5-E34F26?logo=html5&logoColor=white)
-![CSS3](https://img.shields.io/badge/CSS3-1572B6?logo=css3&logoColor=white)
-![JavaScript](https://img.shields.io/badge/JavaScript-Vanilla-F7DF1E?logo=javascript&logoColor=black)
+![Versione](https://img.shields.io/badge/versione-1.0-blue?style=flat-square)
+![Licenza](https://img.shields.io/badge/licenza-AGPL--3.0-green?style=flat-square)
+![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=flat-square&logo=html5&logoColor=white)
+![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=flat-square&logo=css3&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-Vanilla-F7DF1E?style=flat-square&logo=javascript&logoColor=black)
+![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Pronto-success?style=flat-square)
 
 Un emulatore interattivo, storicamente e crittograficamente fedele, delle celebri macchine cifranti elettromeccaniche **Enigma M3** (usata dall'esercito tedesco) ed **Enigma M4** (usata dai sommergibili U-Boot della marina tedesca). Realizzato in un unico file autosufficiente senza librerie esterne, pensato per la didattica, la divulgazione storica e lo studio della crittografia.
-
-[Puoi vederlo qui](https://tagtthespellcaster.github.io/Enigma/)
 
 ## Indice dei contenuti
 
@@ -17,8 +16,9 @@ Un emulatore interattivo, storicamente e crittograficamente fedele, delle celebr
 3. [L'impiego militare e la differenza tra M3 e M4](#limpiego-militare-e-la-differenza-tra-m3-e-m4)
 4. [La violazione del codice: dai matematici polacchi a Bletchley Park](#la-violazione-del-codice-dai-matematici-polacchi-a-bletchley-park)
 5. [Guida all'uso dell'emulatore](#guida-alluso-dellemulatore)
-6. [Installazione e pubblicazione su GitHub Pages](#installazione-e-pubblicazione-su-github-pages)
-7. [Licenza](#licenza)
+6. [Come leggere i messaggi storici: convenzioni radiotelegrafiche e traduzioni](#come-leggere-i-messaggi-storici-convenzioni-radiotelegrafiche-e-traduzioni)
+7. [Installazione e pubblicazione su GitHub Pages](#installazione-e-pubblicazione-su-github-pages)
+8. [Licenza](#licenza)
 
 ## Che cos'è e come nasce Enigma
 
@@ -28,7 +28,7 @@ Nel **1918**, alla fine della Prima Guerra Mondiale, un ingegnere tedesco di nom
 
 A partire dalla fine degli anni Venti, però, le forze armate tedesche (prima la Marina e poi l'Esercito e l'Aviazione) capirono il potenziale straordinario di quella macchina. La acquistarono, la modificarono aggiungendo nuovi livelli di sicurezza e la resero il cuore delle comunicazioni militari della Germania nazista durante tutta la **Seconda Guerra Mondiale**.
 
-## Come funziona la macchina
+## Come funziona la macchina (spiegato semplice)
 
 A prima vista Enigma sembra una grossa macchina da scrivere chiusa in una scatola di legno. In realtà **non stampa nulla su carta**: funziona con una batteria, dei fili elettrici e delle lampadine.
 
@@ -38,7 +38,7 @@ Ma qual è il segreto che rendeva Enigma così difficile da decifrare? **Il labi
 
 Ecco i 4 componenti principali che attraversa la corrente elettrica:
 
-### 1. Il Pannello a Prese (*Steckerbrett*)
+### 1. Il Pannello a Prese (*Steckerbrett* o *Plugboard*)
 
 Sul davanti della macchina ci sono 26 prese, una per ogni lettera dell'alfabeto. Prima ancora di iniziare a scrivere, l'operatore collega alcune coppie di lettere con dei cavi elettrici (di solito 10 cavi, che scambiano 20 lettere).
 
@@ -46,9 +46,9 @@ Sul davanti della macchina ci sono 26 prese, una per ogni lettera dell'alfabeto.
 
 ### 2. I Rotori (*Walzen*)
 
-Sono il vero cervello meccanico di Enigma. Sono spessi dischi con 26 contatti elettrici su una faccia e 26 sull'altra, collegati all'interno da un groviglio di fili incrociati.
+Sono il vero cervello meccanico di Enigma. Sono dischi spessi con 26 contatti elettrici su una faccia e 26 sull'altra, collegati all'interno da un groviglio di fili incrociati.
 
-* **Il movimento a contachilometri:** Ogni volta che premi un tasto, **prima** che passi la corrente, il rotore di destra scatta in avanti di una posizione (esattamente come i numeri del contachilometri di un'auto o le lancette di un orologio). Quando il rotore di destra ha fatto un giro completo (26 scatti), fa avanzare di uno scatto il rotore centrale; quando quello centrale fa un giro completo, fa scattare quello di sinistra.
+* **Il movimento a contachilometri:** Ogni volta che premi un tasto, **prima** che passi la corrente, il rotore di destra scatta in avanti di una posizione (esattamente come i numeri del contachilometri di un'auto o le lancette di un orologio). Quando il rotore di destra raggiunge la propria tacca di avanzamento (*notch*), fa avanzare di uno scatto il rotore centrale; quando quello centrale raggiunge la propria tacca, fa scattare quello di sinistra e contemporaneamente avanza di nuovo sé stesso (anomalia meccanica nota come *double-stepping*).
 * **Perché è geniale?** Se premi due volte di fila il tasto **`E`**, la prima volta si accenderà ad esempio la lampadina **`K`**, mentre la seconda volta i rotori si sono già spostati e si accenderà la **`P`**. Un cifrario di questo tipo si chiama **polialfabetico**.
 * **L'anello (*Ringstellung*):** Ogni rotore ha anche un anello esterno con le lettere dalla `A` alla `Z` (numerate da `01` a `26`) che può essere ruotato rispetto ai fili interni, aggiungendo un ulteriore livello di sfasamento.
 
@@ -57,7 +57,7 @@ Sono il vero cervello meccanico di Enigma. Sono spessi dischi con 26 contatti el
 In fondo ai rotori c'è un disco fisso che non gira, chiamato **riflettore**. Riceve il segnale elettrico, lo scambia su un altro filo e lo **rimanda indietro** attraverso gli stessi rotori, ma lungo un percorso diverso, fino a uscire di nuovo dal pannello a prese e accendere la lampadina finale.
 
 > **Il trucco della reciprocità (come si decifra un messaggio?):**
-> Proprio grazie al riflettore, Enigma è una macchina **simmetrica**: non esiste un interruttore "Cifra / Decifra". Se con una certa configurazione iniziale premendo **`A`** si accende **`G`**, allora riportando i rotori alla stessa identica posizione iniziale e premendo **`G`**, la corrente farà il percorso esattamente al contrario e accenderà **`A`**!
+> Proprio grazie al riflettore, Enigma è una macchina **simmetrica**: non esiste un interruttore "Cifra / Decifra". Se con una certa configurazione iniziale premendo **`A`** si accende **`G`**, allora riportando i rotori alla stessa identica posizione iniziale e premendo **`G`**, la corrente farà il percorso esattamente al contrario e accenderà **`A`**.
 > Per questo motivo, chi riceveva un messaggio via radio doveva solo impostare la propria Enigma esattamente come quella del mittente e digitare il testo cifrato: sulle lampadine compariva il messaggio in chiaro.
 
 ### Il numero astronomico delle combinazioni
@@ -69,11 +69,10 @@ Scegliendo 3 rotori su 5 disponibili, impostandone le posizioni iniziali, gli an
 I comandanti tedeschi distribuivano ogni mese un **libro delle chiavi** (*Schlüsselzettel*), un foglio stampato con inchiostro rosso solubile in acqua (così da poterlo distruggere in un secchio d'acqua in caso di cattura). Su questo foglio era scritta la **chiave del giorno**: quali rotori montare, su quali lettere posizionarli all'inizio della giornata e quali cavi collegare.
 
 ![Foglio cifrario (n. A297185) del 1940, adattato per i gruppi di quattro lettere impiegati nella procedura manuale di riserva (RHV)](./Schl%C3%BCsselzettel.png)
-
 *Foglio cifrario (n. A297185) del 1940, adattato per i gruppi di quattro lettere impiegati nella procedura manuale di riserva (RHV).*
 
 * **Enigma M3 (Wehrmacht — Esercito e Aviazione):** Utilizzava **3 rotori** scelti tra 5 disponibili (`I–V`) e un riflettore standard (`UKW-B` o `UKW-C`). I messaggi venivano trasmessi in codice Morse divisi in gruppi di **5 lettere** (*Fünfergruppen*).
-* **Enigma M4 (Kriegsmarine — Sommergibili U-Boot):** Nel 1942 l'ammiraglio Karl Dönitz sospettò che gli Alleati stessero leggendo i messaggi dei suoi sommergibili nell'Atlantico. Fece progettare una versione potenziata: la **M4**. Per far entrare **4 rotori** nella stessa scatola di legno della M3, gli ingegneri costruirono un riflettore più sottile (*UKW dünn*) e un quarto rotore sottile (*Zusatzwalze*, chiamato **Beta** o **Gamma**) posizionato all'estrema sinistra. Questo quarto rotore poteva essere regolato all'inizio, ma non ruotava durante la digitazione. I messaggi navali venivano trasmessi in gruppi di **4 lettere** (*Vierergruppen*).
+* **Enigma M4 (Kriegsmarine — Sommergibili U-Boot):** Nel 1942 l'ammiraglio Karl Dönitz sospettò che gli Alleati stessero leggendo i messaggi dei suoi sommergibili nell'Atlantico. Fece progettare una versione potenziata: la **M4**. Per far entrare **4 rotori** nella stessa scatola di legno della M3, gli ingegneri costruirono un riflettore più sottile (*UKW dünn*) e un quarto rotore sottile (*Zusatzwalze*, chiamato **Beta** o **Gamma**) posizionato all'estrema sinistra. Questo quarto rotore poteva essere regolato all'inizio, ma non ruotava durante la digitazione. Inoltre, i rotori navali `VI`, `VII` e `VIII` possedevano **due tacche di avanzamento** (`Z` e `M`). I messaggi navali venivano trasmessi in gruppi di **4 lettere** (*Vierergruppen*).
 
 ## La violazione del codice: dai matematici polacchi a Bletchley Park
 
@@ -114,7 +113,7 @@ Usa il selettore metallico in alto a destra per passare istantaneamente tra:
 ### 2. Configurare i rotori (*Walzenlage* e *Ringstellung*)
 
 * **Tipo di rotore:** Usa i menu a tendina in cima a ciascun alloggiamento per scegliere quali rotori inserire. Nella M4, i rotori `VI`, `VII` e `VIII` riportano `(2x)` perché possiedono due tacche di avanzamento (`Z` e `M`).
-* **Posizione iniziale:** Clicca sui pulsanti **`▲`** e **`▼`** accanto a ogni finestrella (oppure usa la **rotella del mouse** direttamente sopra la finestra o la ruota zigrinata) per impostare le lettere iniziali.
+* **Posizione iniziale:** Clicca sui pulsanti **`+`** e **`-`** accanto a ogni finestrella (oppure usa la **rotella del mouse** direttamente sopra la finestra o la ruota zigrinata) per impostare le lettere iniziali.
 * **Anello (*Ring*):** Usa il selettore in basso in ogni blocco per regolare lo sfasamento dell'anello interno (`01-A` fino a `26-Z`).
 
 ### 3. Collegare i cavi (*Steckerbrett*)
@@ -127,21 +126,52 @@ Usa il selettore metallico in alto a destra per passare istantaneamente tra:
 * Digita con la tua **tastiera fisica** (`A–Z`) oppure clicca sui tasti circolari della **Tastatur** QWERTZ.
 * Osserva i rotori scattare in avanti (incluso il celebre fenomeno meccanico del *double-stepping* del rotore centrale) e la lampadina corrispondente illuminarsi sul **Glühlampenfeld**.
 * Sul **nastro di carta** in basso vedrai sia il testo digitato sia il risultato cifrato.
-* **Prova a decifrare:** Dopo aver cifrato una parola (es. `CIAO`), annota il risultato cifrato, riporta i rotori alla posizione iniziale di partenza e digita il testo cifrato: sul nastro riapparirà `CIAO`!
+* **Prova a decifrare:** Dopo aver cifrato una parola (es. `CIAO`), annota il risultato cifrato, riporta i rotori alla posizione iniziale di partenza e digita il testo cifrato: sul nastro riapparirà `CIAO`.
 
-### 5. I Test Storici Autentici (Pulsante dorato in alto a sinistra)
+## Come leggere i messaggi storici: convenzioni radiotelegrafiche e traduzioni
 
-Cliccando il pulsante dorato in alto a sinistra puoi eseguire due vere decifrazioni storiche documentate negli archivi:
+Quando premi il pulsante **Test Storico** in alto a sinistra, l'emulatore carica una vera chiave giornaliera tedesca e decifra un autentico radiomessaggio intercettato durante la Seconda Guerra Mondiale. A prima vista, però, il testo decifrato sul nastro appare pieno di lettere `X` e parole attaccate. Questo accade perché la tastiera di Enigma aveva **solo le 26 lettere dall'A alla Z**: non esistevano la barra spaziatrice, i numeri, né i segni di punteggiatura.
 
-* **In modalità M3 — Test Barbarossa 1941:** Imposta la chiave reale dell'esercito tedesco del **7 luglio 1941** (Riflettore `B`, rotori `II-IV-V`, anelli `02-21-12`, posizione `B-L-A`) e decifra automaticamente sul nastro l'inizio di un vero bollettino dell'Operazione Barbarossa (`AUFKL XABTE ILUNG...`).
-* **In modalità M4 — Test U-264 1942:** Imposta la chiave reale del sommergibile **U-264** del capitano Hartwig Looks del novembre **1942** (Riflettore `UKW-B dünn`, rotori `Beta-II-IV-I`, anelli `01-01-01-22`, posizione `V-J-N-A`) e decifra il vero messaggio intercettato nell'Atlantico (`VONV ONJL OOKS...`).
+### Le regole di scrittura dei marconisti tedeschi
+
+| Simbolo nel testo decifrato | Significato nella trasmissione tedesca | Esempio pratico |
+| :--- | :--- | :--- |
+| **`X`** | Sostituisce lo **spazio** tra le parole oppure il punto a fine frase. | `VONXKURTINOWA` = *von Kurtinowa* |
+| **`Q`** | Sostituisce il gruppo consonantico tedesco **`CH`** (per risparmiare tempo nella trasmissione Morse). | `RIQTUNG` = *Richtung* ("direzione") |
+| **Numeri in lettere** | Non essendoci tasti numerici, le cifre venivano scritte per esteso: `EINS` (1), `ZWO` (2, preferito a *zwei* per evitare confusione con *drei*), `DREI` (3), `VIER` (4), `FUENF` (5), `SECHS` (6), `SIEBEN` (7), `ACHT` (8), `NEUN` (9), `NULL` (0). | `DREINULL` = *30* |
+| **Parole ripetute due volte** | I nomi geografici importanti o i cognomi venivano trasmessi due volte di seguito per evitare errori di ricezione dovuti ai disturbi radio. | `SEBEZXSEBEZ` = località di *Sebez* |
+| **Lettere finali extra** | I messaggi venivano sempre spediti in gruppi completi da 5 lettere (M3) o 4 lettere (M4). Se l'ultimo gruppo restava incompleto, l'operatore aggiungeva lettere casuali di riempimento (*Füllbuchstaben*) alla fine. | `RGTX` = *Rgt.* + `X` di riempimento |
+
+### 1. Test Storico Enigma M3 — Operazione Barbarossa (7 luglio 1941)
+
+Questo messaggio dell'esercito tedesco (*Wehrmacht*) fu intercettato sul fronte orientale due settimane dopo l'inizio dell'invasione dell'Unione Sovietica e decifrato dai crittanalisti di Bletchley Park.
+
+* **Configurazione (chiave del giorno):** Riflettore `UKW-B`, Rotori `II - IV - V`, Anelli (`Ringstellung`) `02 - 21 - 12`, Posizione iniziale `B - L - A`, Cavi (`Steckerbrett`) `AV BS CG DL FU HZ IN KM OW RX`.
+* **Testo cifrato intercettato (*Geheimtext*):**
+  `EDPUD NRGYS ZRCXN UYTPO MRMBO FKTBZ REZKM LXLVE FGUEY SIOZV EQMIK UBPMM YLKLT TDEIS MDICA GYKUA CTCDO MOHWX MUUIA UBSTS LRNBZ SZWNR FXWFY SSXJZ VIJHI DISHP RKLKA YUPAD TXQSP INQMA TLPIF SVKDA SCTAC DPBOP VHJK`
+* **Testo decifrato sul nastro (*Klartext*):**
+  `AUFKL XABTE ILUNG XVONX KURTI NOWAX KURTI NOWAX NORDW ESTLX SEBEZ XSEBE ZXUAF FLIEG ERSTR ASZER IQTUN GXDUB ROWKI XDUBR OWKIX OPOTS CHKAX OPOTS CHKAX UMXEI NSAQD DREIN ULLXU HRANG ETRET ENXAN GRIFF XINFX RGT`
+* **Traduzione in italiano:**
+  > *"Reparto di ricognizione [comandato] da Kurtinowa, a nord-ovest di Sebez sulla strada per i voli, in direzione Dubrowki - Opotschka, partito alle ore 18:30. Attacco [del] reggimento di fanteria."*
+
+### 2. Test Storico Enigma M4 — Sommergibile U-264 (novembre 1942)
+
+Questo celebre bollettino navale fu trasmesso nell'Atlantico dal sommergibile tedesco **U-264**, comandato dal *Kapitänleutnant* Hartwig Looks, durante una caccia ai convogli alleati.
+
+* **Configurazione (chiave del giorno):** Riflettore sottile `UKW-B dünn`, Rotori `Beta - II - IV - I`, Anelli (`Ringstellung`) `01 - 01 - 01 - 22`, Posizione iniziale `V - J - N - A`, Cavi (`Steckerbrett`) `AT BL DF GJ HM NW OP QY RZ VX`.
+* **Testo cifrato intercettato (*Geheimtext*):**
+  `NCZW VUSX PNYM INHZ XMQX SFWX WLKJ AHSH NMCO CCAK UQPM KCSM HKSE INJU SBLK IOSX CKUB HMLL XCSJ USRR DVKO HULX WCCB GVLI YXEO AHXR HKKF VDRE WEZL XOBA FGYU JQUK GRTV UKAM EURB VEKS UHHV OYHA BCJW MAKL FKLM YFVN RIZR VVRT KOFD ANJM OLBG FFLE OPRG TFLV RHOW OPBE KVWM UQFM PWPA RMFH AGKX IIBG`
+* **Testo decifrato sul nastro (*Klartext*):**
+  `VONV ONJL OOKS JHFF TTTE INSE INSD REIZ WOYY QNNS NEUN INHA LTXX BEIA NGRI FFAN TERW ASSE RGED RUEC KTYW ABOS XLET ZTER GEGN ERST ANDN ULAC HTDR EINU LUHR MARQ UANT ONJO TANE UNAC HTSE YHSD REIY ZWOZ WONU LGRA DYAC HTSM YSTO SP`
+* **Traduzione in italiano:**
+  > *"Da Looks: affondate [navi]. 1132 [tonnellate], 9 [siluri rimasti]. Messaggio: durante l'attacco spinto sott'acqua da bombe di profondità. Ultima posizione nota del nemico alle ore 08:30 nel quadrante AJ 9863, rotta 220 gradi, velocità 8 nodi. Fine messaggio."*
 
 ## Installazione e pubblicazione su GitHub Pages
 
 Il progetto è composto da un unico file HTML (`index.html`) privo di dipendenze esterne.
 
 1. Crea un nuovo repository su GitHub (es. `enigma-emulator`).
-2. Carica nella cartella principale i file `index.html` e `README.md`.
+2. Carica nella cartella principale i file `index.html`, `README.md` e `Schlüsselzettel.png`.
 3. Vai su **Settings** $\rightarrow$ **Pages** nel tuo repository.
 4. Sotto la voce **Source**, seleziona `Deploy from a branch`, scegli il branch `main` e la cartella `/ (root)`, quindi clicca su **Save**.
 5. Dopo pochi secondi il tuo emulatore sarà online e accessibile da qualsiasi computer, tablet o smartphone.
