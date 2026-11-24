@@ -26,7 +26,7 @@ Nel **1918**, alla fine della Prima Guerra Mondiale, un ingegnere tedesco di nom
 
 A partire dalla fine degli anni Venti, però, le forze armate tedesche (prima la Marina e poi l'Esercito e l'Aviazione) capirono il potenziale straordinario di quella macchina. La acquistarono, la modificarono aggiungendo nuovi livelli di sicurezza e la resero il cuore delle comunicazioni militari della Germania nazista durante tutta la **Seconda Guerra Mondiale**.
 
-## Come funziona la macchina (spiegato semplice)
+## Come funziona la macchina
 
 A prima vista Enigma sembra una grossa macchina da scrivere chiusa in una scatola di legno. In realtà **non stampa nulla su carta**: funziona con una batteria, dei fili elettrici e delle lampadine.
 
@@ -36,7 +36,7 @@ Ma qual è il segreto che rendeva Enigma così difficile da decifrare? **Il labi
 
 Ecco i 4 componenti principali che attraversa la corrente elettrica:
 
-### 1. Il Pannello a Prese (*Steckerbrett* o *Plugboard*)
+### 1. Il Pannello a Prese (*Steckerbrett*)
 
 Sul davanti della macchina ci sono 26 prese, una per ogni lettera dell'alfabeto. Prima ancora di iniziare a scrivere, l'operatore collega alcune coppie di lettere con dei cavi elettrici (di solito 10 cavi, che scambiano 20 lettere).
 
@@ -44,7 +44,7 @@ Sul davanti della macchina ci sono 26 prese, una per ogni lettera dell'alfabeto.
 
 ### 2. I Rotori (*Walzen*)
 
-Sono il vero cervello meccanico di Enigma. Sono dischi spessi con 26 contatti elettrici su una faccia e 26 sull'altra, collegati all'interno da un groviglio di fili incrociati.
+Sono il vero cervello meccanico di Enigma. Sono spessi dischi con 26 contatti elettrici su una faccia e 26 sull'altra, collegati all'interno da un groviglio di fili incrociati.
 
 * **Il movimento a contachilometri:** Ogni volta che premi un tasto, **prima** che passi la corrente, il rotore di destra scatta in avanti di una posizione (esattamente come i numeri del contachilometri di un'auto o le lancette di un orologio). Quando il rotore di destra ha fatto un giro completo (26 scatti), fa avanzare di uno scatto il rotore centrale; quando quello centrale fa un giro completo, fa scattare quello di sinistra.
 * **Perché è geniale?** Se premi due volte di fila il tasto **`E`**, la prima volta si accenderà ad esempio la lampadina **`K`**, mentre la seconda volta i rotori si sono già spostati e si accenderà la **`P`**. Un cifrario di questo tipo si chiama **polialfabetico**.
@@ -65,6 +65,9 @@ Scegliendo 3 rotori su 5 disponibili, impostandone le posizioni iniziali, gli an
 ## L'impiego militare e la differenza tra M3 e M4
 
 I comandanti tedeschi distribuivano ogni mese un **libro delle chiavi** (*Schlüsselzettel*), un foglio stampato con inchiostro rosso solubile in acqua (così da poterlo distruggere in un secchio d'acqua in caso di cattura). Su questo foglio era scritta la **chiave del giorno**: quali rotori montare, su quali lettere posizionarli all'inizio della giornata e quali cavi collegare.
+
+![Foglio cifrario (n. A297185) del 1940, adattato per i gruppi di quattro lettere impiegati nella procedura manuale di riserva (RHV)](./Schl%C3%BCsselzettel.png)
+*Foglio cifrario (n. A297185) del 1940, adattato per i gruppi di quattro lettere impiegati nella procedura manuale di riserva (RHV).*
 
 * **Enigma M3 (Wehrmacht — Esercito e Aviazione):** Utilizzava **3 rotori** scelti tra 5 disponibili (`I–V`) e un riflettore standard (`UKW-B` o `UKW-C`). I messaggi venivano trasmessi in codice Morse divisi in gruppi di **5 lettere** (*Fünfergruppen*).
 * **Enigma M4 (Kriegsmarine — Sommergibili U-Boot):** Nel 1942 l'ammiraglio Karl Dönitz sospettò che gli Alleati stessero leggendo i messaggi dei suoi sommergibili nell'Atlantico. Fece progettare una versione potenziata: la **M4**. Per far entrare **4 rotori** nella stessa scatola di legno della M3, gli ingegneri costruirono un riflettore più sottile (*UKW dünn*) e un quarto rotore sottile (*Zusatzwalze*, chiamato **Beta** o **Gamma**) posizionato all'estrema sinistra. Questo quarto rotore poteva essere regolato all'inizio, ma non ruotava durante la digitazione. I messaggi navali venivano trasmessi in gruppi di **4 lettere** (*Vierergruppen*).
