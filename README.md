@@ -8,6 +8,8 @@
 
 Un emulatore interattivo, storicamente e crittograficamente fedele, delle celebri macchine cifranti elettromeccaniche **Enigma M3** (usata dall'esercito tedesco) ed **Enigma M4** (usata dai sommergibili U-Boot della marina tedesca). Realizzato in un unico file autosufficiente senza librerie esterne, pensato per la didattica, la divulgazione storica e lo studio della crittografia.
 
+[Puoi vederlo qui](https://tagtthespellcaster.github.io/Enigma/)
+
 ## Indice dei contenuti
 
 1. [Che cos'è e come nasce Enigma](#che-cosè-e-come-nasce-enigma)
