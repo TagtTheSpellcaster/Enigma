@@ -9,7 +9,6 @@
        DESIGN TOKENS STORICI DINAMICI (M3 MAHOGANY vs M4 MARINE OAK)
        ========================================================================== */
     :root {
-      /* Palette predefinita M3 (Mogano caldo Wehrmacht) */
       --wood-dark: #2a160c;
       --wood-mid: #472413;
       --wood-light: #63341d;
@@ -31,7 +30,6 @@
       --font-plate: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     }
 
-    /* Tema navale M4 (Rovere scuro marinato Kriegsmarine) */
     body.mode-m4 {
       --wood-dark: #14110e;
       --wood-mid: #26201a;
@@ -66,7 +64,7 @@
     }
 
     /* ==========================================================================
-       BARRA STRUMENTI SUPERIORE CON SELETTORE MECCANICO M3 / M4 IN ALTO A DESTRA
+       BARRA STRUMENTI SUPERIORE (ZERO ICONE / ZERO EMOJI)
        ========================================================================== */
     .top-toolbar {
       width: 100%;
@@ -78,10 +76,10 @@
       gap: 10px;
       margin-bottom: 14px;
       padding: 10px 14px;
-      background: rgba(20, 21, 24, 0.92);
+      background: rgba(20, 21, 24, 0.94);
       border: 1px solid #3c382f;
       border-radius: 10px;
-      box-shadow: 0 6px 22px rgba(0, 0, 0, 0.6);
+      box-shadow: 0 6px 22px rgba(0, 0, 0, 0.65);
     }
 
     .toolbar-left {
@@ -103,14 +101,14 @@
       color: var(--ivory-text);
       border: 1px solid #4e4a41;
       border-radius: 6px;
-      padding: 6px 11px;
-      font-size: 0.79rem;
-      font-weight: 600;
-      letter-spacing: 0.03em;
+      padding: 6px 12px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 5px;
+      justify-content: center;
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.08);
       transition: transform 0.08s ease, border-color 0.15s ease, background 0.15s ease;
     }
@@ -134,22 +132,63 @@
       background: linear-gradient(180deg, #a3802b 0%, #6d5316 100%);
     }
 
-    /* Controllo volume Web Audio */
+    /* Pulsante Manuale in stile targhetta metallica incisa */
+    .btn-manual-plate {
+      background: linear-gradient(180deg, #25282c 0%, #131517 100%);
+      color: var(--steel-light);
+      border: 1.5px solid var(--steel-mid);
+      border-radius: 5px;
+      padding: 5px 13px;
+      font-family: var(--font-typewriter);
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+      transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+    }
+
+    .btn-manual-plate:hover {
+      border-color: var(--brass-light);
+      color: var(--brass-light);
+      background: linear-gradient(180deg, #2e3238 0%, #191b1e 100%);
+    }
+
+    /* Controllo volume / mute meccanico (solo etichette testuali) */
     .volume-control-group {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 7px;
       background: linear-gradient(180deg, #272a2e 0%, #18191c 100%);
       border: 1px solid #4e4a41;
       border-radius: 6px;
-      padding: 5px 9px;
+      padding: 5px 10px;
       box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.75);
+    }
+
+    .btn-mute-label {
+      background: none;
+      border: none;
+      color: var(--brass-light);
+      font-family: var(--font-typewriter);
+      font-size: 0.74rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      cursor: pointer;
+      padding: 0;
+      min-width: 56px;
+      text-align: left;
+    }
+
+    .btn-mute-label.muted {
+      color: var(--ivory-muted);
     }
 
     .volume-slider {
       -webkit-appearance: none;
       appearance: none;
-      width: 64px;
+      width: 66px;
       height: 5px;
       background: #101113;
       border: 1px solid #484c52;
@@ -180,7 +219,7 @@
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.85);
     }
 
-    /* Commutatore Meccanico M3 / M4 in stile interruttore d'epoca */
+    /* Commutatore Meccanico M3 / M4 in alto a destra */
     .model-switch-housing {
       display: inline-flex;
       align-items: center;
@@ -189,7 +228,6 @@
       border-radius: 8px;
       padding: 3px;
       box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.9), 0 2px 6px rgba(0, 0, 0, 0.6);
-      position: relative;
     }
 
     .model-switch-btn {
@@ -275,7 +313,6 @@
       gap: 18px;
     }
 
-    /* Viti a taglio agli angoli */
     .screw {
       position: absolute;
       width: 13px;
@@ -300,7 +337,6 @@
     .screw.bl { bottom: 9px; left: 9px; transform: rotate(-25deg); }
     .screw.br { bottom: 9px; right: 9px; transform: rotate(72deg); }
 
-    /* Targhetta metallica superiore dinamica */
     .machine-header {
       display: flex;
       justify-content: space-between;
@@ -422,7 +458,6 @@
       box-shadow: inset 0 3px 8px rgba(0, 0, 0, 0.82);
     }
 
-    /* Ghiera in ottone brunito per il 4° rotore ausiliario (Zusatzwalze) della M4 */
     .rotor-slot-box.aux-rotor-slot {
       border-color: var(--brass-mid);
       background: linear-gradient(180deg, #1d1912 0%, #12110e 100%);
@@ -461,7 +496,6 @@
       border-color: var(--brass-light);
     }
 
-    /* Tamburo del rotore con finestra curva in vetro e ruota zigrinata */
     .rotor-drum-assembly {
       display: flex;
       align-items: center;
@@ -544,7 +578,6 @@
       border-bottom: 1px solid rgba(0, 0, 0, 0.14);
     }
 
-    /* Ruota zigrinata (Thumbwheel) */
     .thumbwheel-controls {
       display: flex;
       flex-direction: column;
@@ -579,11 +612,12 @@
     .wheel-btn {
       width: 100%;
       height: 29px;
-      background: rgba(15, 16, 18, 0.65);
+      background: rgba(15, 16, 18, 0.68);
       border: none;
       color: var(--ivory-text);
-      font-size: 0.78rem;
-      font-weight: bold;
+      font-family: var(--font-typewriter);
+      font-size: 0.9rem;
+      font-weight: 800;
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -652,7 +686,6 @@
       font-weight: 700;
       font-size: clamp(0.85rem, 2.2vw, 1.1rem);
       color: #54575c;
-      /* Transizione solo in spegnimento (60ms); accensione istantanea (0ms) su .lit */
       transition: background 0.06s ease-out, color 0.06s ease-out, box-shadow 0.06s ease-out, border-color 0.06s ease-out;
       will-change: background, box-shadow, color;
       position: relative;
@@ -849,7 +882,7 @@
     }
 
     /* ==========================================================================
-       SEZIONE 5: NASTRO TELEGRAFICO (PAPIERSTREIFEN: 5 LETTERE M3 / 4 LETTERE M4)
+       SEZIONE 5: NASTRO TELEGRAFICO (PAPIERSTREIFEN)
        ========================================================================== */
     .paper-tape-container {
       width: 100%;
@@ -975,30 +1008,260 @@
       transform: translateX(-50%) translateY(0);
       opacity: 1;
     }
+
+    /* ==========================================================================
+       DIALOG MODALE MANUALE OFFLINE (STILE GITHUB DARK / DOCUMENTAZIONE TECNICA)
+       ========================================================================== */
+    dialog#manual-dialog {
+      width: min(920px, 95vw);
+      max-height: 88vh;
+      padding: 0;
+      border: 1px solid #30363d;
+      border-radius: 10px;
+      background: #0d1117;
+      color: #e6edf3;
+      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.92);
+      overflow: hidden;
+    }
+
+    dialog#manual-dialog::backdrop {
+      background: rgba(1, 4, 9, 0.82);
+      backdrop-filter: blur(2px);
+    }
+
+    .manual-dialog-shell {
+      display: flex;
+      flex-direction: column;
+      max-height: 88vh;
+    }
+
+    .manual-topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 20px;
+      background: #161b22;
+      border-bottom: 1px solid #30363d;
+      flex-shrink: 0;
+    }
+
+    .manual-topbar-meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-typewriter);
+      font-size: 0.78rem;
+      color: #8b949e;
+    }
+
+    .manual-tag {
+      background: #21262d;
+      border: 1px solid #30363d;
+      color: #c9d1d9;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: 700;
+    }
+
+    .btn-close-manual {
+      background: #21262d;
+      color: #f0f6fc;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      padding: 6px 14px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.15s ease, border-color 0.15s ease;
+    }
+
+    .btn-close-manual:hover {
+      background: #30363d;
+      border-color: #8b949e;
+    }
+
+    .manual-scroll-body {
+      padding: 24px 28px 36px;
+      overflow-y: auto;
+      line-height: 1.65;
+      font-size: 0.95rem;
+      color: #e6edf3;
+      user-select: text;
+      -webkit-user-select: text;
+    }
+
+    @media (max-width: 600px) {
+      .manual-scroll-body {
+        padding: 18px 16px 28px;
+      }
+    }
+
+    .manual-scroll-body h1 {
+      font-size: 1.65rem;
+      margin-top: 0;
+      margin-bottom: 12px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #30363d;
+      color: #f0f6fc;
+    }
+
+    .manual-scroll-body h2 {
+      font-size: 1.28rem;
+      margin-top: 28px;
+      margin-bottom: 10px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid #21262d;
+      color: #f0f6fc;
+      scroll-margin-top: 14px;
+    }
+
+    .manual-scroll-body h3 {
+      font-size: 1.05rem;
+      margin-top: 20px;
+      margin-bottom: 8px;
+      color: #c9d1d9;
+    }
+
+    .manual-scroll-body p {
+      margin: 0 0 12px;
+      color: #c9d1d9;
+    }
+
+    .manual-scroll-body ul,
+    .manual-scroll-body ol {
+      margin: 0 0 14px;
+      padding-left: 22px;
+      color: #c9d1d9;
+    }
+
+    .manual-scroll-body li {
+      margin-bottom: 6px;
+    }
+
+    .manual-scroll-body a {
+      color: #58a6ff;
+      text-decoration: none;
+    }
+
+    .manual-scroll-body a:hover {
+      text-decoration: underline;
+    }
+
+    .manual-scroll-body code {
+      font-family: var(--font-typewriter);
+      font-size: 0.86em;
+      background: #161b22;
+      border: 1px solid #30363d;
+      color: #e6c367;
+      padding: 1px 5px;
+      border-radius: 4px;
+    }
+
+    .manual-scroll-body blockquote {
+      margin: 14px 0;
+      padding: 10px 16px;
+      background: #161b22;
+      border-left: 4px solid #b38e36;
+      border-radius: 0 6px 6px 0;
+      color: #d0d7de;
+    }
+
+    .manual-table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      margin: 14px 0 18px;
+    }
+
+    .manual-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.86rem;
+      background: #161b22;
+    }
+
+    .manual-table th,
+    .manual-table td {
+      border: 1px solid #30363d;
+      padding: 8px 11px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    .manual-table th {
+      background: #21262d;
+      color: #f0f6fc;
+      font-weight: 700;
+    }
+
+    .manual-table tr:nth-child(even) td {
+      background: #0d1117;
+    }
+
+    .manual-figure {
+      margin: 18px 0;
+      padding: 12px;
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .manual-figure img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 4px;
+      border: 1px solid #30363d;
+      display: block;
+      margin: 0 auto 8px;
+    }
+
+    .manual-figure figcaption {
+      font-size: 0.82rem;
+      font-style: italic;
+      color: #8b949e;
+    }
+
+    .manual-img-fallback {
+      display: none;
+      padding: 16px;
+      background: #0d1117;
+      border: 1px dashed #30363d;
+      border-radius: 6px;
+      color: #8b949e;
+      font-family: var(--font-typewriter);
+      font-size: 0.8rem;
+      margin-bottom: 8px;
+    }
   </style>
 </head>
 <body>
 
-  <!-- BARRA STRUMENTI SUPERIORE CON SELETTORE MECCANICO M3 / M4 IN ALTO A DESTRA -->
+  <!-- BARRA STRUMENTI SUPERIORE (ZERO ICONE / ZERO EMOJI) -->
   <header class="top-toolbar">
     <div class="toolbar-left">
+      <button type="button" class="btn-manual-plate" id="btn-open-manual" title="Apri il manuale storico e tecnico completo">
+        Manuale
+      </button>
+
       <button type="button" class="btn-vintage btn-brass" id="btn-historical-test">
-        ★ Test Barbarossa 1941
+        Test Storico (Barbarossa 1941)
       </button>
 
       <div class="volume-control-group" title="Regola volume e mute suoni meccanici">
-        <button type="button" id="btn-sound-toggle" style="background:none;border:none;color:var(--brass-light);cursor:pointer;padding:0;font-size:0.9rem;line-height:1;" aria-label="Attiva/Disattiva Audio">
-          🔊
+        <button type="button" class="btn-mute-label" id="btn-sound-toggle" aria-label="Attiva o disattiva suoni meccanici">
+          Audio ON
         </button>
         <input type="range" id="volume-slider" class="volume-slider" min="0" max="100" value="85" aria-label="Volume suoni meccanici" />
       </div>
 
       <button type="button" class="btn-vintage" id="btn-reset-tape" title="Cancella il testo sul nastro telegrafico">
-        ↺ Reset Nastro
+        Reset Nastro
       </button>
 
       <button type="button" class="btn-vintage" id="btn-clear-plugs-top" title="Scollega tutti i cavi dello Steckerbrett">
-        ✕ Svuota Spine
+        Svuota Spine
       </button>
     </div>
 
@@ -1060,7 +1323,7 @@
       <section class="section-panel" aria-label="Tastiera">
         <div class="section-label">
           <span>Tastatur (Tastiera QWERTZ)</span>
-          <span>Clic, touch o tastiera fisica (A–Z)</span>
+          <span>Clic, touch o tastiera fisica (A-Z)</span>
         </div>
         <div class="qwertz-grid" id="keyboard-container"></div>
       </section>
@@ -1118,6 +1381,226 @@
   <!-- TOAST DI NOTIFICA -->
   <div class="toast-banner" id="toast-banner"></div>
 
+  <!-- ==========================================================================
+       DIALOG MODALE MANUALE OFFLINE (CONTENUTO COMPLETO DEL README IN HTML)
+       ========================================================================== -->
+  <dialog id="manual-dialog" aria-labelledby="manual-main-title">
+    <div class="manual-dialog-shell">
+      <div class="manual-topbar">
+        <div class="manual-topbar-meta">
+          <span class="manual-tag">Versione 1.0</span>
+          <span class="manual-tag">Licenza AGPL-3.0</span>
+          <span>Documentazione Offline</span>
+        </div>
+        <button type="button" class="btn-close-manual" id="btn-close-manual">Chiudi</button>
+      </div>
+
+      <div class="manual-scroll-body" id="manual-scroll-container">
+        <h1 id="manual-main-title">Emulatore Storico Enigma M3 &amp; M4</h1>
+        <p>
+          Un emulatore interattivo, storicamente e crittograficamente fedele, delle celebri macchine cifranti elettromeccaniche <strong>Enigma M3</strong> (usata dall'esercito tedesco) ed <strong>Enigma M4</strong> (usata dai sommergibili U-Boot della marina tedesca). Realizzato in un unico file autosufficiente senza librerie esterne, pensato per la didattica, la divulgazione storica e lo studio della crittografia.
+        </p>
+
+        <h2>Indice dei contenuti</h2>
+        <ol>
+          <li><a href="#sec-storia">Che cos'è e come nasce Enigma</a></li>
+          <li><a href="#sec-funzionamento">Come funziona la macchina (spiegato semplice)</a></li>
+          <li><a href="#sec-m3-m4">L'impiego militare e la differenza tra M3 e M4</a></li>
+          <li><a href="#sec-violazione">La violazione del codice: dai matematici polacchi a Bletchley Park</a></li>
+          <li><a href="#sec-guida-app">Guida all'uso dell'emulatore</a></li>
+          <li><a href="#sec-licenza">Licenza e Versione</a></li>
+        </ol>
+
+        <h2 id="sec-storia">1. Che cos'è e come nasce Enigma</h2>
+        <p>
+          Oggi diamo per scontato che i nostri messaggi su WhatsApp o le nostre password viaggino protetti da sistemi matematici invisibili. Cento anni fa, però, per inviare un messaggio segreto via radio (dove chiunque avesse un'antenna poteva intercettarlo) bisognava trasformare il testo in una sequenza incomprensibile di lettere usando cifrari scritti a mano su tabelle di carta. Era un processo lento e pieno di errori umani.
+        </p>
+        <p>
+          Nel <strong>1918</strong>, alla fine della Prima Guerra Mondiale, un ingegnere tedesco di nome <strong>Arthur Scherbius</strong> brevettò un'invenzione rivoluzionaria: <strong>Enigma</strong>. All'inizio non era pensata per la guerra: Scherbius la vendeva a banche e grandi aziende per proteggere i segreti commerciali e i telegrammi finanziari.
+        </p>
+        <p>
+          A partire dalla fine degli anni Venti, però, le forze armate tedesche (prima la Marina e poi l'Esercito e l'Aviazione) capirono il potenziale straordinario di quella macchina. La acquistarono, la modificarono aggiungendo nuovi livelli di sicurezza e la resero il cuore delle comunicazioni militari della Germania nazista durante tutta la <strong>Seconda Guerra Mondiale</strong>.
+        </p>
+
+        <h2 id="sec-funzionamento">2. Come funziona la macchina (spiegato semplice)</h2>
+        <p>
+          A prima vista Enigma sembra una grossa macchina da scrivere chiusa in una scatola di legno. In realtà <strong>non stampa nulla su carta</strong>: funziona con una batteria, dei fili elettrici e delle lampadine.
+        </p>
+        <p>
+          Quando premi un tasto (per esempio la lettera <code>A</code>), la corrente elettrica parte dalla batteria, attraversa un labirinto di cavi e fa accendere una lampadina con sopra scritta un'altra lettera (per esempio <code>G</code>). Un secondo operatore seduto accanto legge la lettera illuminata e la annota su un foglio.
+        </p>
+        <p>
+          Ma qual è il segreto che rendeva Enigma così difficile da decifrare? <strong>Il labirinto cambia forma ad ogni singolo tasto premuto.</strong>
+        </p>
+
+        <div class="manual-table-wrap">
+          <table class="manual-table">
+            <thead>
+              <tr>
+                <th>Componente</th>
+                <th>Nome originale</th>
+                <th>Funzione nel circuito elettrico</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Pannello a prese</strong></td>
+                <td><em>Steckerbrett</em> (Plugboard)</td>
+                <td>Scambia coppie di lettere tramite cavi fisici prima dell'ingresso nei rotori e dopo l'uscita.</td>
+              </tr>
+              <tr>
+                <td><strong>Rotori</strong></td>
+                <td><em>Walzen</em></td>
+                <td>Dischi rotanti a 26 contatti che avanzano come un contachilometri ad ogni tasto premuto, cambiando l'alfabeto di sostituzione.</td>
+              </tr>
+              <tr>
+                <td><strong>Anello alfabetico</strong></td>
+                <td><em>Ringstellung</em></td>
+                <td>Sfalsa la posizione interna del cablaggio del rotore rispetto alle lettere visibili nella finestrella.</td>
+              </tr>
+              <tr>
+                <td><strong>Riflettore</strong></td>
+                <td><em>Umkehrwalze</em> (UKW)</td>
+                <td>Inverte il percorso della corrente rimandandola indietro attraverso i rotori su un tracciato diverso.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>1. Il Pannello a Prese (Steckerbrett)</h3>
+        <p>
+          Sul davanti della macchina ci sono 26 prese, una per ogni lettera dell'alfabeto. Prima ancora di iniziare a scrivere, l'operatore collega alcune coppie di lettere con dei cavi elettrici (di solito 10 cavi, che scambiano 20 lettere). Se colleghi un cavo tra <code>A</code> e <code>V</code>, ogni volta che premi <code>A</code> la macchina la trasforma subito in <code>V</code> prima ancora che il segnale raggiunga i rotori.
+        </p>
+
+        <h3>2. I Rotori (Walzen) e il Double-Stepping</h3>
+        <p>
+          Sono il vero cervello meccanico di Enigma. Sono dischi spessi con 26 contatti elettrici su una faccia e 26 sull'altra, collegati all'interno da un groviglio di fili incrociati.
+        </p>
+        <ul>
+          <li><strong>Il movimento a contachilometri:</strong> Ogni volta che premi un tasto, <strong>prima</strong> che passi la corrente, il rotore di destra scatta in avanti di una posizione. Quando ha raggiunto la propria tacca di avanzamento (<em>notch</em>), fa scattare il rotore centrale; quando quello centrale raggiunge la propria tacca, fa scattare quello di sinistra e contemporaneamente avanza di nuovo sé stesso (anomalia meccanica nota come <em>double-stepping</em>).</li>
+          <li><strong>Cifrario polialfabetico:</strong> Se premi due volte di fila il tasto <code>E</code>, la prima volta si accenderà ad esempio la lampadina <code>K</code>, mentre la seconda volta i rotori si sono già spostati e si accenderà la <code>P</code>.</li>
+        </ul>
+
+        <h3>3. Il Riflettore (Umkehrwalze) e la reciprocità</h3>
+        <p>
+          In fondo ai rotori c'è un disco fisso che non gira, chiamato <strong>riflettore</strong>. Riceve il segnale elettrico, lo scambia su un altro filo e lo <strong>rimanda indietro</strong> attraverso gli stessi rotori, ma lungo un percorso diverso, fino a uscire di nuovo dal pannello a prese e accendere la lampadina finale.
+        </p>
+        <blockquote>
+          <strong>Il trucco della reciprocità (come si decifra un messaggio):</strong><br />
+          Proprio grazie al riflettore, Enigma è una macchina <strong>simmetrica</strong>: non esiste un interruttore "Cifra / Decifra". Se con una certa configurazione iniziale premendo <code>A</code> si accende <code>G</code>, allora riportando i rotori alla stessa identica posizione iniziale e premendo <code>G</code>, la corrente farà il percorso esattamente al contrario e accenderà <code>A</code>. Per questo motivo, chi riceveva un messaggio via radio doveva solo impostare la propria Enigma esattamente come quella del mittente e digitare il testo cifrato: sulle lampadine compariva il messaggio in chiaro.
+        </blockquote>
+
+        <h2 id="sec-m3-m4">3. L'impiego militare e la differenza tra M3 e M4</h2>
+        <p>
+          I comandanti tedeschi distribuivano ogni mese un <strong>libro delle chiavi</strong> (<em>Schlüsselzettel</em>), un foglio stampato con inchiostro rosso solubile in acqua (così da poterlo distruggere in un secchio d'acqua in caso di cattura). Su questo foglio era scritta la <strong>chiave del giorno</strong>: quali rotori montare, su quali lettere posizionarli all'inizio della giornata e quali cavi collegare.
+        </p>
+
+        <figure class="manual-figure">
+          <img
+            src="./Schl%C3%BCsselzettel.png"
+            alt="Foglio cifrario (n. A297185) del 1940, adattato per i gruppi di quattro lettere impiegati nella procedura manuale di riserva (RHV)"
+            onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
+          />
+          <div class="manual-img-fallback">
+            Immagine storica: ./Schlüsselzettel.png (posizionare il file immagine nella stessa cartella di index.html per visualizzarlo).
+          </div>
+          <figcaption>
+            Foglio cifrario (n. A297185) del 1940, adattato per i gruppi di quattro lettere impiegati nella procedura manuale di riserva (RHV).
+          </figcaption>
+        </figure>
+
+        <div class="manual-table-wrap">
+          <table class="manual-table">
+            <thead>
+              <tr>
+                <th>Caratteristica</th>
+                <th>Enigma M3 (Wehrmacht)</th>
+                <th>Enigma M4 (Kriegsmarine / U-Boot)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Forza armata</strong></td>
+                <td>Esercito (Heer) e Aviazione (Luftwaffe)</td>
+                <td>Marina da guerra (sommergibili U-Boot, rete Triton)</td>
+              </tr>
+              <tr>
+                <td><strong>Numero di rotori</strong></td>
+                <td>3 rotori mobili scelti tra <code>I, II, III, IV, V</code></td>
+                <td>4 rotori: 1 ausiliario fisso (<code>Beta</code> o <code>Gamma</code>) + 3 mobili scelti tra <code>I–VIII</code></td>
+              </tr>
+              <tr>
+                <td><strong>Tacche di avanzamento</strong></td>
+                <td>1 tacca per rotore</td>
+                <td>1 tacca sui rotori <code>I–V</code>; 2 tacche (<code>Z</code> e <code>M</code>) sui rotori navali <code>VI, VII, VIII</code></td>
+              </tr>
+              <tr>
+                <td><strong>Riflettore</strong></td>
+                <td>Standard (<code>UKW-B</code> o <code>UKW-C</code>)</td>
+                <td>Sottile navale (<code>UKW-B dünn</code> o <code>UKW-C dünn</code>)</td>
+              </tr>
+              <tr>
+                <td><strong>Formato trasmissione</strong></td>
+                <td>Gruppi di 5 lettere (<em>Fünfergruppen</em>)</td>
+                <td>Gruppi di 4 lettere (<em>Vierergruppen</em>)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2 id="sec-violazione">4. La violazione del codice: dai matematici polacchi a Bletchley Park</h2>
+        <p>
+          La storia di come Enigma fu sconfitta è una delle pagine più affascinanti della storia della scienza e dimostra che nessun sistema è davvero invincibile se si analizzano gli errori umani e la matematica.
+        </p>
+
+        <h3>1. I pionieri polacchi (1932–1939)</h3>
+        <p>
+          Contrariamente a quanto si pensa spesso, i primi a violare Enigma non furono gli inglesi, ma tre giovani matematici polacchi dell'Ufficio Cifra di Varsavia: <strong>Marian Rejewski</strong>, <strong>Jerzy Różycki</strong> e <strong>Henryk Zygalski</strong>.
+        </p>
+        <ul>
+          <li>A partire dal 1932, Rejewski usò la <strong>teoria dei gruppi</strong> (una branca dell'algebra astratta) per ricostruire da zero il cablaggio interno dei rotori senza aver mai visto una macchina militare tedesca.</li>
+          <li>I polacchi costruirono anche le prime macchine elettromeccaniche per trovare le chiavi giornaliere, chiamate <strong>Bomba</strong> (<em>Bomba kryptologiczna</em>).</li>
+          <li>Nell'estate del <strong>1939</strong>, poche settimane prima che la Germania invadesse la Polonia, i servizi segreti polacchi convocarono a Varsavia i crittanalisti britannici e francesi e consegnarono loro i progetti e due repliche funzionanti di Enigma. Fu un regalo decisivo per le sorti della guerra.</li>
+        </ul>
+
+        <h3>2. Bletchley Park e Alan Turing (1939–1945)</h3>
+        <p>
+          In Gran Bretagna il lavoro proseguì in gran segreto nella tenuta vittoriana di <strong>Bletchley Park</strong>, dove lavorarono migliaia di persone (in gran parte donne, matematici, linguisti, campioni di scacchi ed enigmisti).
+        </p>
+        <p>
+          Il matematico inglese <strong>Alan Turing</strong>, insieme al collega <strong>Gordon Welchman</strong>, progettò una macchina elettromeccanica molto più potente chiamata <strong>Bombe</strong>. La <em>Bombe</em> non provava tutte le combinazioni a caso, ma sfruttava due punti deboli fondamentali di Enigma:
+        </p>
+        <ol>
+          <li><strong>Nessuna lettera poteva mai essere cifrata in sé stessa:</strong> a causa del circuito del riflettore, una <code>A</code> non diventava mai <code>A</code>. Questo permetteva di scartare istantaneamente milioni di posizioni sbagliate.</li>
+          <li><strong>Le parole prevedibili (Cribs):</strong> I tedeschi erano molto metodici. Ogni mattina alle 6:00 inviavano il bollettino meteorologico che conteneva quasi sempre la parola <em>WETTERBERICHT</em> ("bollettino meteo") e chiudevano molti messaggi con <em>HEIL HITLER</em>. Indovinando dove si trovavano queste parole nel testo cifrato, la <em>Bombe</em> di Turing riusciva a dedurre la configurazione dei rotori in poche ore.</li>
+        </ol>
+        <p>
+          Quando nel 1942 entrò in servizio la <strong>Enigma M4</strong> degli U-Boot, Bletchley Park rimase "al buio" per quasi dieci mesi, durante i quali i sommergibili tedeschi affondarono centinaia di navi alleate. Il codice fu violato di nuovo grazie alla cattura dei libri cifrari dal sommergibile <strong>U-559</strong> e alla costruzione di <em>Bombe</em> ancora più veloci, contribuendo ad accorciare la Seconda Guerra Mondiale di almeno due anni e gettando le basi per la nascita dei moderni computer.
+        </p>
+
+        <h2 id="sec-guida-app">5. Guida all'uso dell'emulatore</h2>
+        <ol>
+          <li><strong>Scegliere la macchina (in alto a destra):</strong> Usa il commutatore metallico per passare istantaneamente tra <code>M3 (3 Rotori)</code> e <code>M4 (4 Rotori)</code>. Le due macchine mantengono configurazioni, cavi e nastri completamente indipendenti in memoria.</li>
+          <li><strong>Configurare i rotori (Walzenlage e Ringstellung):</strong> Usa i menu a tendina in cima a ciascun alloggiamento per scegliere i rotori, regola l'anello interno (<code>01-A</code> fino a <code>26-Z</code>) in basso e imposta la posizione iniziale tramite i pulsanti <code>+</code> / <code>-</code> oppure ruotando la <strong>rotella del mouse</strong> direttamente sopra la finestra o la ruota zigrinata.</li>
+          <li><strong>Collegare i cavi (Steckerbrett):</strong> Clicca su due prese nel pannello inferiore per collegarle con un cavo intrecciato colorato (oppure digita le coppie nel campo <code>Coppie:</code>, ad esempio <code>AV BS CG DL</code>, e premi <strong>Applica</strong>). Cliccando su una presa già collegata il cavo viene scollegato.</li>
+          <li><strong>Cifrare e decifrare:</strong> Digita con la tastiera fisica (<code>A–Z</code>) o clicca sui tasti della <strong>Tastatur</strong> QWERTZ. Per verificare la reciprocità, annota il testo cifrato, riporta i rotori alla posizione iniziale di partenza e digita il testo cifrato: sul nastro riapparirà il messaggio originale.</li>
+          <li><strong>Test Storici Verificati:</strong> Cliccando il pulsante dorato in alto a sinistra viene caricata e decifrata in tempo reale una vera intercettazione storica:
+            <ul>
+              <li><strong>In modalità M3 — Barbarossa 1941:</strong> Chiave del 7 luglio 1941 (<code>UKW-B</code>, rotori <code>II-IV-V</code>, anelli <code>02-21-12</code>, posizione <code>B-L-A</code>, cavi <code>AV BS CG DL FU HZ IN KM OW RX</code>).</li>
+              <li><strong>In modalità M4 — U-264 1942:</strong> Chiave del sommergibile U-264 del novembre 1942 (<code>UKW-B dünn</code>, rotori <code>Beta-II-IV-I</code>, anelli <code>01-01-01-22</code>, posizione <code>V-J-N-A</code>, cavi <code>AT BL DF GJ HM NW OP QY RZ VX</code>).</li>
+            </ul>
+          </li>
+        </ol>
+
+        <h2 id="sec-licenza">6. Licenza e Versione</h2>
+        <p>
+          <strong>Versione:</strong> 1.0 — Emulatore Unificato Enigma M3 &amp; M4.<br />
+          <strong>Licenza:</strong> Distribuito sotto licenza libera <strong>GNU Affero General Public License v3.0 (AGPL-3.0)</strong>. Puoi usare, studiare, modificare e redistribuire liberamente il codice sorgente, a condizione che ogni versione modificata o resa disponibile in rete mantenga la stessa licenza libera e aperta.
+        </p>
+      </div>
+    </div>
+  </dialog>
+
   <script>
     /**
      * ============================================================================
@@ -1132,7 +1615,6 @@
       ['P', 'Y', 'X', 'C', 'V', 'B', 'N', 'M', 'L']
     ];
 
-    // Cablaggi storici certificati di tutti i rotori (I-VIII, Beta, Gamma)
     const ROTOR_SPECS = {
       I:     { wiring: 'EKMFLGDQVZNTOWYHXUSPAIBRCJ', notches: ['Q'] },
       II:    { wiring: 'AJDKSIRUXBLHWTMCQGZNPYFVOE', notches: ['E'] },
@@ -1146,7 +1628,6 @@
       Gamma: { wiring: 'FSOKANUERHMBTIYCWLQPZXVGJD', notches: [] }
     };
 
-    // Pre-calcolo cablaggi inversi per velocizzare il passaggio di ritorno
     Object.keys(ROTOR_SPECS).forEach((key) => {
       const w = ROTOR_SPECS[key].wiring;
       const inv = new Array(26);
@@ -1156,7 +1637,6 @@
       ROTOR_SPECS[key].invWiring = inv.join('');
     });
 
-    // Riflettori storici standard (M3) e sottili navali (M4)
     const REFLECTOR_SPECS = {
       M3: {
         B: { label: 'UKW-B', wiring: 'YRUHQSLDPXNGOKMIEBFZCWVJAT' },
@@ -1174,15 +1654,11 @@
       '#386641', '#5c4d7d', '#9c6644'
     ];
 
-    /**
-     * STATO SEPARATO E INDIPENDENTE PER ENIGMA M3 E ENIGMA M4
-     */
     const appState = {
-      activeModel: 'M3', // 'M3' | 'M4'
+      activeModel: 'M3',
       machines: {
         M3: {
           reflector: 'B',
-          // 3 rotori mobili: [Sinistro, Centrale, Destro]
           rotors: [
             { type: 'I',   pos: 0, ring: 0 },
             { type: 'II',  pos: 0, ring: 0 },
@@ -1195,7 +1671,6 @@
         },
         M4: {
           reflector: 'B',
-          // 4 rotori: [Zusatzwalze (Beta/Gamma fisso), Sinistro, Centrale, Destro]
           rotors: [
             { type: 'Beta', pos: 0, ring: 0 },
             { type: 'II',   pos: 0, ring: 0 },
@@ -1223,7 +1698,7 @@
 
     /**
      * ============================================================================
-     * SINTETIZZATORE WEB AUDIO API (COMPRESSORE MASTER + ALTO GUADAGNO)
+     * SINTETIZZATORE WEB AUDIO API (COMPRESSORE MASTER + 3 LIVELLI TIMBRICI)
      * ============================================================================
      */
     class MechanicalAudio {
@@ -1301,7 +1776,7 @@
           noise.start(now);
           noise.stop(now + 0.045);
 
-          // 2. Corpo grave dell'impatto sul telaio
+          // 2. Impatto grave sul telaio
           const thudOsc = this.ctx.createOscillator();
           const thudGain = this.ctx.createGain();
           thudOsc.type = 'triangle';
@@ -1404,12 +1879,6 @@
       return ROTOR_SPECS[rotorObj.type].notches.includes(currentLetter);
     }
 
-    /**
-     * Meccanica di stepping esatta (prima della cifratura):
-     * - I 3 rotori mobili sono sempre gli ultimi 3 dell'array `m.rotors`
-     *   (indici [0, 1, 2] in M3; indici [1, 2, 3] in M4).
-     * - L'eventuale Zusatzwalze (indice 0 in M4) non avanza mai automaticamente.
-     */
     function stepRotors() {
       const m = currentMachine();
       const offset = appState.activeModel === 'M4' ? 1 : 0;
@@ -1435,7 +1904,7 @@
 
       const indicator = document.getElementById('double-step-indicator');
       if (doubleStepped) {
-        indicator.textContent = '⚡ Double-Stepping attivato';
+        indicator.textContent = 'Double-Stepping attivato';
       } else {
         indicator.textContent = appState.activeModel === 'M4'
           ? 'Circuito navale attivo'
@@ -1443,11 +1912,6 @@
       }
     }
 
-    /**
-     * Formula esatta di passaggio segnale con Ringstellung (r) e Posizione (p):
-     * Andata:  ((wiring[(c + p - r + 26) % 26] - p + r) + 26) % 26
-     * Ritorno: ((invWiring[(c + p - r + 26) % 26] - p + r) + 26) % 26
-     */
     function passThroughRotor(c, rotorObj, forward) {
       const spec = ROTOR_SPECS[rotorObj.type];
       const mapStr = forward ? spec.wiring : spec.invWiring;
@@ -1469,29 +1933,22 @@
       if (!ALPHABET.includes(upper)) return null;
 
       const m = currentMachine();
-
-      // 1. Avanzamento meccanico dei rotori prima della cifratura
       stepRotors();
 
-      // 2. Steckerbrett in ingresso
       let ch = passThroughPlugboard(upper);
       let signal = charToIndex(ch);
 
-      // 3. Andata da destra a sinistra attraverso tutti i rotori (3 in M3, 4 in M4)
       for (let i = m.rotors.length - 1; i >= 0; i--) {
         signal = passThroughRotor(signal, m.rotors[i], true);
       }
 
-      // 4. Riflettore (UKW-B/C oppure UKW-B/C dünn)
       const ukwWiring = REFLECTOR_SPECS[appState.activeModel][m.reflector].wiring;
       signal = charToIndex(ukwWiring[signal]);
 
-      // 5. Ritorno da sinistra a destra attraverso tutti i rotori
       for (let i = 0; i < m.rotors.length; i++) {
         signal = passThroughRotor(signal, m.rotors[i], false);
       }
 
-      // 6. Steckerbrett in uscita
       return passThroughPlugboard(indexToChar(signal));
     }
 
@@ -1518,7 +1975,6 @@
       deck.className = isM4 ? 'rotors-deck cols-4' : 'rotors-deck';
       deck.innerHTML = '';
 
-      // 1. Slot Riflettore (Umkehrwalze)
       const refSpecs = REFLECTOR_SPECS[appState.activeModel];
       const refBox = document.createElement('div');
       refBox.className = 'rotor-slot-box';
@@ -1542,7 +1998,6 @@
         updateRotorReadout();
       });
 
-      // 2. Slot dei Rotori (3 in M3, 4 in M4)
       m.rotors.forEach((rotorObj, slotIdx) => {
         const isAux = isM4 && slotIdx === 0;
         const slotBox = document.createElement('div');
@@ -1555,12 +2010,11 @@
           captionText = ['Sinistro (Links)', 'Centrale (Mitte)', 'Destro (Rechts)'][slotIdx];
         }
 
-        // Opzioni rotore consentite per questo slot
         let rotorOptionsHtml = '';
         if (isAux) {
           rotorOptionsHtml = `
-            <option value="Beta" ${rotorObj.type === 'Beta' ? 'selected' : ''}>Beta (β)</option>
-            <option value="Gamma" ${rotorObj.type === 'Gamma' ? 'selected' : ''}>Gamma (γ)</option>
+            <option value="Beta" ${rotorObj.type === 'Beta' ? 'selected' : ''}>Beta (B)</option>
+            <option value="Gamma" ${rotorObj.type === 'Gamma' ? 'selected' : ''}>Gamma (G)</option>
           `;
         } else if (isM4) {
           const navalTypes = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII'];
@@ -1575,7 +2029,6 @@
           ).join('');
         }
 
-        // Opzioni Ringstellung 01-A ... 26-Z
         let ringOptionsHtml = '';
         for (let r = 0; r < 26; r++) {
           const numStr = String(r + 1).padStart(2, '0');
@@ -1588,16 +2041,16 @@
             ${rotorOptionsHtml}
           </select>
           <div class="rotor-drum-assembly">
-            <div class="rotor-window-frame" title="Clicca o usa la rotella del mouse per ruotare">
+            <div class="rotor-window-frame" title="Usa la rotella del mouse per ruotare">
               <div class="rotor-window-drum">
                 <span class="drum-letter adj" id="drum-${slotIdx}-prev">${indexToChar(rotorObj.pos - 1)}</span>
                 <span class="drum-letter curr" id="drum-${slotIdx}-curr">${indexToChar(rotorObj.pos)}</span>
                 <span class="drum-letter adj" id="drum-${slotIdx}-next">${indexToChar(rotorObj.pos + 1)}</span>
               </div>
             </div>
-            <div class="thumbwheel-controls" title="Ruota zigrinata: clicca ▲/▼ o usa rotella mouse">
-              <button type="button" class="wheel-btn" data-dir="1" aria-label="Avanza ${captionText}">▲</button>
-              <button type="button" class="wheel-btn" data-dir="-1" aria-label="Arretra ${captionText}">▼</button>
+            <div class="thumbwheel-controls" title="Ruota zigrinata: clicca + / - o usa rotella mouse">
+              <button type="button" class="wheel-btn" data-dir="1" aria-label="Avanza ${captionText}">+</button>
+              <button type="button" class="wheel-btn" data-dir="-1" aria-label="Arretra ${captionText}">-</button>
             </div>
           </div>
           <div class="ring-control-row">
@@ -1608,33 +2061,28 @@
           </div>
         `;
 
-        // Listener cambio tipo rotore
         slotBox.querySelector('.rotor-type-select').addEventListener('change', (e) => {
           rotorObj.type = e.target.value;
           updateRotorReadout();
         });
 
-        // Listener cambio Ringstellung
         slotBox.querySelector('.ring-select').addEventListener('change', (e) => {
           rotorObj.ring = parseInt(e.target.value, 10);
           updateRotorReadout();
         });
 
-        // Funzione di rotazione manuale del singolo rotore
         const stepManualRotor = (dir) => {
           rotorObj.pos = mod26(rotorObj.pos + dir);
           soundFX.playRotorTick();
           updateRotorDrumsUI();
         };
 
-        // Pulsanti ▲ / ▼ sulla ruota zigrinata
         slotBox.querySelectorAll('.wheel-btn').forEach((btn) => {
           btn.addEventListener('click', () => {
             stepManualRotor(parseInt(btn.dataset.dir, 10));
           });
         });
 
-        // Supporto rotella del mouse (wheel) sia sulla finestra che sulla ruota zigrinata
         const onWheelRotate = (e) => {
           e.preventDefault();
           const dir = e.deltaY < 0 ? 1 : -1;
@@ -1758,11 +2206,6 @@
       });
     }
 
-    /**
-     * ============================================================================
-     * FORMATTAZIONE NASTRO TELEGRAFICO (5 LETTERE M3 / 4 LETTERE M4)
-     * ============================================================================
-     */
     function formatGroupedText(str) {
       if (!str) return '—';
       const groupSize = appState.activeModel === 'M4' ? 4 : 5;
@@ -1798,7 +2241,7 @@
       if (lampEl) {
         if (appState.activeLamp === letter && lampEl.classList.contains('lit')) {
           lampEl.classList.remove('lit');
-          void lampEl.offsetWidth; // Reflow sincrono forzato per doppie lettere consecutive
+          void lampEl.offsetWidth;
         }
         lampEl.classList.add('lit');
       }
@@ -1844,7 +2287,6 @@
       const keyEl = document.getElementById(`key-${letter}`);
       if (keyEl) keyEl.classList.add('pressed');
 
-      // Calcolo crittografico sincrono e illuminazione lampada prima dell'audio
       const cipherLetter = encryptCharacter(letter);
       if (cipherLetter) {
         igniteLamp(cipherLetter);
@@ -1883,7 +2325,7 @@
         delete m.plugboard[letter];
         delete m.plugboard[partner];
         m.selectedPlug = null;
-        statusEl.textContent = `Cavo scollegato (${letter} ↔ ${partner})`;
+        statusEl.textContent = `Cavo scollegato (${letter} - ${partner})`;
         updatePlugboardUI();
         return;
       }
@@ -1910,7 +2352,7 @@
       m.plugboard[first] = letter;
       m.plugboard[letter] = first;
       m.selectedPlug = null;
-      statusEl.textContent = `Collegato cavo: ${first} ↔ ${letter}`;
+      statusEl.textContent = `Collegato cavo: ${first} - ${letter}`;
       soundFX.playRotorTick();
       updatePlugboardUI();
     }
@@ -2086,8 +2528,8 @@
         : 'ENIGMA M3 • WEHRMACHT';
 
       document.getElementById('btn-historical-test').textContent = isM4
-        ? '★ Test U-264 1942'
-        : '★ Test Barbarossa 1941';
+        ? 'Test Storico (U-264 1942)'
+        : 'Test Storico (Barbarossa 1941)';
 
       document.getElementById('walzenlage-title').textContent = isM4
         ? 'Walzenlage & Ringstellung (Riflettore Sottile, Zusatzwalze e 3 Rotori)'
@@ -2133,8 +2575,6 @@
       let toastEnd = '';
 
       if (appState.activeModel === 'M3') {
-        // Operazione Barbarossa, 7 luglio 1941:
-        // UKW-B | Rotori II, IV, V | Ring: 02-B, 21-U, 12-L | Pos: B, L, A
         m.reflector = 'B';
         m.rotors = [
           { type: 'II', pos: charToIndex('B'), ring: 1 },
@@ -2146,8 +2586,6 @@
         toastStart = 'Avvio decifratura storica Operazione Barbarossa (7 Luglio 1941)...';
         toastEnd = 'Decifrato: "AUFKLXABTEILUNG..." (Barbarossa 1941 verificato)';
       } else {
-        // Sommergibile U-264 (Kapitänleutnant Hartwig Looks, 1942):
-        // UKW-B dünn | Rotori Beta, II, IV, I | Ring: 01-A, 01-A, 01-A, 22-V | Pos: V, J, N, A
         m.reflector = 'B';
         m.rotors = [
           { type: 'Beta', pos: charToIndex('V'), ring: 0 },
@@ -2190,10 +2628,44 @@
 
     /**
      * ============================================================================
-     * INIZIALIZZAZIONE EVENTI GLOBALI
+     * INIZIALIZZAZIONE EVENTI GLOBALI E DIALOG MANUALE
      * ============================================================================
      */
     function initEventListeners() {
+      // Gestione Dialog Modale Manuale
+      const manualDialog = document.getElementById('manual-dialog');
+      const manualScrollContainer = document.getElementById('manual-scroll-container');
+
+      document.getElementById('btn-open-manual').addEventListener('click', () => {
+        if (typeof manualDialog.showModal === 'function') {
+          manualDialog.showModal();
+        } else {
+          manualDialog.setAttribute('open', '');
+        }
+        manualScrollContainer.scrollTop = 0;
+      });
+
+      document.getElementById('btn-close-manual').addEventListener('click', () => {
+        if (typeof manualDialog.close === 'function') {
+          manualDialog.close();
+        } else {
+          manualDialog.removeAttribute('open');
+        }
+      });
+
+      // Chiusura al clic sul backdrop esterno del dialog
+      manualDialog.addEventListener('click', (e) => {
+        const rect = manualDialog.getBoundingClientRect();
+        const isInDialog =
+          rect.top <= e.clientY &&
+          e.clientY <= rect.top + rect.height &&
+          rect.left <= e.clientX &&
+          e.clientX <= rect.left + rect.width;
+        if (!isInDialog && typeof manualDialog.close === 'function') {
+          manualDialog.close();
+        }
+      });
+
       // Selettore meccanico M3 / M4 in alto a destra
       document.getElementById('switch-m3').addEventListener('click', () => switchMachineModel('M3'));
       document.getElementById('switch-m4').addEventListener('click', () => switchMachineModel('M4'));
@@ -2205,19 +2677,25 @@
       const soundBtn = document.getElementById('btn-sound-toggle');
       const volumeSlider = document.getElementById('volume-slider');
 
+      const updateAudioButtonLabel = () => {
+        const isOn = appState.soundEnabled && appState.volume > 0;
+        soundBtn.textContent = isOn ? 'Audio ON' : 'Audio OFF';
+        soundBtn.classList.toggle('muted', !isOn);
+      };
+
       soundBtn.addEventListener('click', () => {
         appState.soundEnabled = !appState.soundEnabled;
-        soundBtn.textContent = appState.soundEnabled && appState.volume > 0 ? '🔊' : '🔇';
+        updateAudioButtonLabel();
         soundFX.ensureContext();
         soundFX.updateVolume();
-        if (appState.soundEnabled) soundFX.playRotorTick();
+        if (appState.soundEnabled && appState.volume > 0) soundFX.playRotorTick();
       });
 
       volumeSlider.addEventListener('input', (e) => {
         const val = parseInt(e.target.value, 10) / 100;
         appState.volume = val;
         appState.soundEnabled = val > 0;
-        soundBtn.textContent = val > 0 ? '🔊' : '🔇';
+        updateAudioButtonLabel();
         soundFX.ensureContext();
         soundFX.updateVolume();
       });
@@ -2269,8 +2747,9 @@
         showToast('Risultato cifrato copiato negli appunti!');
       });
 
-      // Tastiera fisica (ignora input, select e textarea)
+      // Tastiera fisica (ignora input, select, textarea e dialog aperto)
       window.addEventListener('keydown', (e) => {
+        if (manualDialog.open) return;
         const tag = e.target.tagName;
         if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
         if (e.ctrlKey || e.metaKey || e.altKey) return;
@@ -2283,13 +2762,13 @@
       });
 
       window.addEventListener('keyup', (e) => {
+        if (manualDialog.open) return;
         const key = e.key.toUpperCase();
         if (key.length === 1 && ALPHABET.includes(key)) {
           handleKeyUp(key);
         }
       });
 
-      // Ridisegna cavi SVG al ridimensionamento finestra
       window.addEventListener('resize', () => {
         drawPlugboardCables(getPlugPairsList());
       });
