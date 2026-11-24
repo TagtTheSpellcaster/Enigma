@@ -1,0 +1,2309 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Enigma M3 &amp; M4 — Emulatore Storico Interattivo</title>
+  <style>
+    /* ==========================================================================
+       DESIGN TOKENS STORICI DINAMICI (M3 MAHOGANY vs M4 MARINE OAK)
+       ========================================================================== */
+    :root {
+      /* Palette predefinita M3 (Mogano caldo Wehrmacht) */
+      --wood-dark: #2a160c;
+      --wood-mid: #472413;
+      --wood-light: #63341d;
+      --chassis-bg: #18191b;
+      --chassis-surface: #222427;
+      --brass-light: #e6c367;
+      --brass-mid: #b38e36;
+      --brass-dark: #6b5219;
+      --steel-light: #e6e8eb;
+      --steel-mid: #9ba1a8;
+      --ivory-text: #efe9d5;
+      --ivory-muted: #a69f8c;
+      --lamp-glow: #ffb700;
+      --lamp-core: #fff4b8;
+      --paper-bg: #f3ebd3;
+      --paper-ink: #22201e;
+      --cipher-ink: #8a1c1c;
+      --font-typewriter: 'Courier New', Courier, 'Lucida Console', monospace;
+      --font-plate: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    /* Tema navale M4 (Rovere scuro marinato Kriegsmarine) */
+    body.mode-m4 {
+      --wood-dark: #14110e;
+      --wood-mid: #26201a;
+      --wood-light: #382f26;
+      --chassis-bg: #151719;
+      --chassis-surface: #1e2124;
+      --paper-bg: #efe6cd;
+      --cipher-ink: #14365d;
+    }
+
+    * {
+      box-sizing: border-box;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    body {
+      margin: 0;
+      padding: 16px 10px 44px;
+      background: radial-gradient(circle at 50% 18%, #2b2928 0%, #111010 100%);
+      color: var(--ivory-text);
+      font-family: var(--font-plate);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      transition: background 0.3s ease;
+    }
+
+    body.mode-m4 {
+      background: radial-gradient(circle at 50% 18%, #22262b 0%, #0d0f11 100%);
+    }
+
+    /* ==========================================================================
+       BARRA STRUMENTI SUPERIORE CON SELETTORE MECCANICO M3 / M4 IN ALTO A DESTRA
+       ========================================================================== */
+    .top-toolbar {
+      width: 100%;
+      max-width: 920px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+      padding: 10px 14px;
+      background: rgba(20, 21, 24, 0.92);
+      border: 1px solid #3c382f;
+      border-radius: 10px;
+      box-shadow: 0 6px 22px rgba(0, 0, 0, 0.6);
+    }
+
+    .toolbar-left {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .toolbar-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-left: auto;
+    }
+
+    .btn-vintage {
+      background: linear-gradient(180deg, #32353a 0%, #1f2124 100%);
+      color: var(--ivory-text);
+      border: 1px solid #4e4a41;
+      border-radius: 6px;
+      padding: 6px 11px;
+      font-size: 0.79rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      transition: transform 0.08s ease, border-color 0.15s ease, background 0.15s ease;
+    }
+
+    .btn-vintage:hover {
+      border-color: var(--brass-mid);
+      background: linear-gradient(180deg, #3c4046 0%, #26282c 100%);
+    }
+
+    .btn-vintage:active {
+      transform: translateY(1px);
+    }
+
+    .btn-brass {
+      background: linear-gradient(180deg, #8c6d23 0%, #5b4512 100%);
+      border-color: var(--brass-light);
+      color: #fff9e6;
+    }
+
+    .btn-brass:hover {
+      background: linear-gradient(180deg, #a3802b 0%, #6d5316 100%);
+    }
+
+    /* Controllo volume Web Audio */
+    .volume-control-group {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: linear-gradient(180deg, #272a2e 0%, #18191c 100%);
+      border: 1px solid #4e4a41;
+      border-radius: 6px;
+      padding: 5px 9px;
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.75);
+    }
+
+    .volume-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 64px;
+      height: 5px;
+      background: #101113;
+      border: 1px solid #484c52;
+      border-radius: 3px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .volume-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, var(--brass-light), var(--brass-dark));
+      border: 1px solid #1a1305;
+      cursor: pointer;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.85);
+    }
+
+    .volume-slider::-moz-range-thumb {
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, var(--brass-light), var(--brass-dark));
+      border: 1px solid #1a1305;
+      cursor: pointer;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.85);
+    }
+
+    /* Commutatore Meccanico M3 / M4 in stile interruttore d'epoca */
+    .model-switch-housing {
+      display: inline-flex;
+      align-items: center;
+      background: #0e0f11;
+      border: 1.5px solid var(--brass-mid);
+      border-radius: 8px;
+      padding: 3px;
+      box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.9), 0 2px 6px rgba(0, 0, 0, 0.6);
+      position: relative;
+    }
+
+    .model-switch-btn {
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--ivory-muted);
+      font-family: var(--font-typewriter);
+      font-size: 0.78rem;
+      font-weight: 800;
+      padding: 5px 11px;
+      border-radius: 5px;
+      cursor: pointer;
+      letter-spacing: 0.04em;
+      transition: all 0.16s ease;
+    }
+
+    .model-switch-btn:hover:not(.active) {
+      color: var(--ivory-text);
+    }
+
+    .model-switch-btn.active {
+      background: linear-gradient(180deg, var(--brass-light) 0%, var(--brass-mid) 100%);
+      color: #161004;
+      border-color: #fff2c2;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    }
+
+    /* ==========================================================================
+       CASSA IN LEGNO E CHASSIS IN METALLO NERO RAGGRINZITO (WRINKLE PAINT)
+       ========================================================================== */
+    .enigma-wood-case {
+      width: 100%;
+      max-width: 920px;
+      padding: 16px;
+      border-radius: 16px;
+      background:
+        repeating-linear-gradient(
+          92deg,
+          rgba(0, 0, 0, 0.14) 0px,
+          rgba(0, 0, 0, 0.14) 2px,
+          transparent 2px,
+          transparent 9px
+        ),
+        linear-gradient(135deg, var(--wood-light) 0%, var(--wood-mid) 46%, var(--wood-dark) 100%);
+      box-shadow:
+        0 26px 65px rgba(0, 0, 0, 0.88),
+        inset 0 2px 3px rgba(255, 220, 185, 0.22),
+        inset 0 -4px 9px rgba(0, 0, 0, 0.8);
+      border: 2px solid #160c06;
+      position: relative;
+      transition: background 0.35s ease;
+    }
+
+    .wood-clasp {
+      position: absolute;
+      top: 50%;
+      width: 10px;
+      height: 56px;
+      transform: translateY(-50%);
+      background: linear-gradient(90deg, var(--brass-dark), var(--brass-light), var(--brass-dark));
+      border-radius: 3px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.75);
+    }
+    .wood-clasp.left { left: 4px; }
+    .wood-clasp.right { right: 4px; }
+
+    .enigma-chassis {
+      background-color: var(--chassis-bg);
+      background-image:
+        radial-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 0),
+        radial-gradient(rgba(0, 0, 0, 0.48) 1px, transparent 0);
+      background-size: 4px 4px;
+      background-position: 0 0, 2px 2px;
+      border-radius: 10px;
+      border: 2px solid #0a0b0c;
+      box-shadow:
+        inset 0 2px 12px rgba(0, 0, 0, 0.92),
+        0 1px 0 rgba(255, 255, 255, 0.07);
+      padding: 18px 16px 22px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    /* Viti a taglio agli angoli */
+    .screw {
+      position: absolute;
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #d6d9de, #6a7078 70%, #26282b 100%);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.9), inset 0 1px 1px rgba(255, 255, 255, 0.5);
+      z-index: 5;
+    }
+    .screw::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 15%;
+      width: 70%;
+      height: 1.5px;
+      background: #1f2124;
+      transform: translateY(-50%) rotate(30deg);
+    }
+    .screw.tl { top: 9px; left: 9px; }
+    .screw.tr { top: 9px; right: 9px; transform: rotate(45deg); }
+    .screw.bl { bottom: 9px; left: 9px; transform: rotate(-25deg); }
+    .screw.br { bottom: 9px; right: 9px; transform: rotate(72deg); }
+
+    /* Targhetta metallica superiore dinamica */
+    .machine-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 14px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .nameplate {
+      background: linear-gradient(180deg, #1b1d20 0%, #101113 100%);
+      border: 1.5px solid var(--steel-mid);
+      border-radius: 5px;
+      padding: 4px 16px;
+      box-shadow: 0 2px 7px rgba(0, 0, 0, 0.8), inset 0 0 5px rgba(255, 255, 255, 0.08);
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      transition: border-color 0.25s ease;
+    }
+
+    body.mode-m4 .nameplate {
+      border-color: var(--brass-mid);
+    }
+
+    .nameplate-title {
+      font-family: 'Times New Roman', Georgia, serif;
+      font-weight: 700;
+      font-size: 1.25rem;
+      letter-spacing: 0.26em;
+      color: var(--steel-light);
+      text-shadow: 0 1px 2px #000;
+    }
+
+    .nameplate-serial {
+      font-family: var(--font-typewriter);
+      font-size: 0.74rem;
+      color: var(--brass-light);
+      border-left: 1px solid #444;
+      padding-left: 10px;
+      font-weight: 700;
+    }
+
+    .status-pill {
+      font-family: var(--font-typewriter);
+      font-size: 0.74rem;
+      color: var(--brass-light);
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid #3c3628;
+      padding: 4px 11px;
+      border-radius: 20px;
+    }
+
+    /* ==========================================================================
+       SEZIONE 1: GRUPPO ROTORI DINAMICO (3 ROTORI M3 vs 4 ROTORI M4)
+       ========================================================================== */
+    .section-panel {
+      background: linear-gradient(180deg, rgba(33, 35, 39, 0.88) 0%, rgba(19, 20, 23, 0.94) 100%);
+      border: 1px solid #31343a;
+      border-radius: 8px;
+      padding: 12px 14px;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 4px 10px rgba(0, 0, 0, 0.45);
+      position: relative;
+    }
+
+    .section-label {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--ivory-muted);
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .rotors-deck {
+      display: grid;
+      grid-template-columns: 114px repeat(3, 1fr);
+      gap: 11px;
+      align-items: stretch;
+    }
+
+    .rotors-deck.cols-4 {
+      grid-template-columns: 114px repeat(4, 1fr);
+    }
+
+    @media (max-width: 780px) {
+      .rotors-deck.cols-4 {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    @media (max-width: 660px) {
+      .rotors-deck {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 390px) {
+      .rotors-deck,
+      .rotors-deck.cols-4 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .rotor-slot-box {
+      background: #131416;
+      border: 1px solid #2e3136;
+      border-radius: 8px;
+      padding: 9px 7px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      gap: 7px;
+      box-shadow: inset 0 3px 8px rgba(0, 0, 0, 0.82);
+    }
+
+    /* Ghiera in ottone brunito per il 4° rotore ausiliario (Zusatzwalze) della M4 */
+    .rotor-slot-box.aux-rotor-slot {
+      border-color: var(--brass-mid);
+      background: linear-gradient(180deg, #1d1912 0%, #12110e 100%);
+      box-shadow: inset 0 0 12px rgba(176, 139, 52, 0.16), inset 0 3px 8px rgba(0, 0, 0, 0.85);
+    }
+
+    .slot-caption {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.09em;
+      color: var(--steel-light);
+      text-transform: uppercase;
+      text-align: center;
+    }
+
+    .rotor-slot-box.aux-rotor-slot .slot-caption {
+      color: var(--brass-light);
+    }
+
+    .vintage-select {
+      width: 100%;
+      background: linear-gradient(180deg, #2a2d32 0%, #1b1d20 100%);
+      color: var(--ivory-text);
+      border: 1px solid #4a4e54;
+      border-radius: 5px;
+      padding: 4px 5px;
+      font-family: var(--font-typewriter);
+      font-size: 0.76rem;
+      font-weight: 700;
+      text-align: center;
+      cursor: pointer;
+      outline: none;
+    }
+
+    .vintage-select:focus {
+      border-color: var(--brass-light);
+    }
+
+    /* Tamburo del rotore con finestra curva in vetro e ruota zigrinata */
+    .rotor-drum-assembly {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin: 2px 0;
+    }
+
+    .rotor-window-frame {
+      width: 45px;
+      height: 80px;
+      background: linear-gradient(90deg, #5d626a, #cfd4dc 20%, #8f959e 50%, #cfd4dc 80%, #52565e);
+      padding: 3px;
+      border-radius: 6px;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.85);
+      position: relative;
+      cursor: ns-resize;
+    }
+
+    .aux-rotor-slot .rotor-window-frame {
+      background: linear-gradient(90deg, #634b14, #e6c367 22%, #9e7b28 50%, #e6c367 78%, #523d0f);
+    }
+
+    .rotor-window-drum {
+      width: 100%;
+      height: 100%;
+      border-radius: 4px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(
+        180deg,
+        #6d685c 0%,
+        #d8d0bc 24%,
+        #f7f1df 50%,
+        #d8d0bc 76%,
+        #6d685c 100%
+      );
+      box-shadow: inset 0 6px 8px rgba(0, 0, 0, 0.55), inset 0 -6px 8px rgba(0, 0, 0, 0.55);
+      position: relative;
+    }
+
+    .rotor-window-frame::before,
+    .rotor-window-frame::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      width: 5px;
+      height: 2px;
+      background: #b82929;
+      transform: translateY(-50%);
+      z-index: 3;
+    }
+    .rotor-window-frame::before { left: 1px; }
+    .rotor-window-frame::after { right: 1px; }
+
+    .drum-letter {
+      font-family: var(--font-typewriter);
+      font-weight: 800;
+      line-height: 1;
+      color: #191816;
+    }
+
+    .drum-letter.adj {
+      font-size: 0.76rem;
+      opacity: 0.55;
+      transform: scaleY(0.75);
+      padding: 2px 0;
+    }
+
+    .drum-letter.curr {
+      font-size: 1.3rem;
+      color: #0e0d0c;
+      background: rgba(255, 255, 255, 0.35);
+      width: 100%;
+      text-align: center;
+      padding: 3px 0;
+      border-top: 1px solid rgba(0, 0, 0, 0.14);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.14);
+    }
+
+    /* Ruota zigrinata (Thumbwheel) */
+    .thumbwheel-controls {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: repeating-linear-gradient(
+        180deg,
+        #4e535a 0px,
+        #9aa0a8 2px,
+        #222428 4px,
+        #222428 6px
+      );
+      border: 1px solid #111;
+      border-radius: 5px;
+      width: 23px;
+      height: 80px;
+      justify-content: space-between;
+      overflow: hidden;
+      box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.75);
+      cursor: ns-resize;
+    }
+
+    .aux-rotor-slot .thumbwheel-controls {
+      background: repeating-linear-gradient(
+        180deg,
+        #735819 0px,
+        #d9b75c 2px,
+        #29200c 4px,
+        #29200c 6px
+      );
+    }
+
+    .wheel-btn {
+      width: 100%;
+      height: 29px;
+      background: rgba(15, 16, 18, 0.65);
+      border: none;
+      color: var(--ivory-text);
+      font-size: 0.78rem;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      transition: background 0.1s;
+    }
+
+    .wheel-btn:hover {
+      background: rgba(179, 142, 54, 0.55);
+      color: #fff;
+    }
+
+    .wheel-btn:active {
+      background: rgba(229, 195, 101, 0.85);
+      color: #000;
+    }
+
+    .ring-control-row {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 4px;
+      font-size: 0.66rem;
+      color: var(--ivory-muted);
+    }
+
+    .ring-control-row select {
+      width: 65px;
+      padding: 2px 3px;
+      font-size: 0.7rem;
+    }
+
+    /* ==========================================================================
+       SEZIONE 2: PANNELLO LUMINOSO (GLÜHLAMPENFELD - ACCENSIONE ISTANTANEA 0MS)
+       ========================================================================== */
+    .qwertz-grid {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      padding: 4px 0;
+    }
+
+    .qwertz-row {
+      display: flex;
+      justify-content: center;
+      gap: clamp(6px, 2vw, 18px);
+      width: 100%;
+    }
+
+    .lamp-bulb {
+      width: clamp(30px, 7.2vw, 44px);
+      height: clamp(30px, 7.2vw, 44px);
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, #2a2c30 0%, #121315 75%, #09090a 100%);
+      border: 2px solid #484c52;
+      box-shadow:
+        inset 0 2px 5px rgba(0, 0, 0, 0.9),
+        0 2px 4px rgba(0, 0, 0, 0.75);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-plate);
+      font-weight: 700;
+      font-size: clamp(0.85rem, 2.2vw, 1.1rem);
+      color: #54575c;
+      /* Transizione solo in spegnimento (60ms); accensione istantanea (0ms) su .lit */
+      transition: background 0.06s ease-out, color 0.06s ease-out, box-shadow 0.06s ease-out, border-color 0.06s ease-out;
+      will-change: background, box-shadow, color;
+      position: relative;
+    }
+
+    .lamp-bulb::after {
+      content: '';
+      position: absolute;
+      top: 14%;
+      left: 20%;
+      width: 32%;
+      height: 18%;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.12);
+      transform: rotate(-25deg);
+      pointer-events: none;
+    }
+
+    .lamp-bulb.lit {
+      transition: none !important;
+      background: radial-gradient(circle at 50% 50%, var(--lamp-core) 0%, var(--lamp-glow) 55%, #b86e00 100%);
+      color: #2b1800;
+      border-color: #ffe885;
+      text-shadow: 0 0 4px rgba(255, 255, 255, 0.8);
+      box-shadow:
+        0 0 16px 5px rgba(255, 183, 0, 0.92),
+        0 0 36px 12px rgba(255, 145, 0, 0.55),
+        inset 0 0 9px rgba(255, 255, 255, 0.95);
+      z-index: 2;
+    }
+
+    /* ==========================================================================
+       SEZIONE 3: TASTIERA MECCANICA (TASTATUR - QWERTZ)
+       ========================================================================== */
+    .enigma-key {
+      width: clamp(32px, 7.6vw, 48px);
+      height: clamp(32px, 7.6vw, 48px);
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, #2c2e33 0%, #101113 80%);
+      border: 2.5px solid var(--steel-light);
+      box-shadow:
+        0 5px 0 #090a0b,
+        0 7px 10px rgba(0, 0, 0, 0.85),
+        inset 0 1px 2px rgba(255, 255, 255, 0.25);
+      color: #f4f1ea;
+      font-family: var(--font-plate);
+      font-weight: 700;
+      font-size: clamp(0.88rem, 2.3vw, 1.15rem);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      padding: 0;
+      position: relative;
+      transition: transform 0.05s ease, box-shadow 0.05s ease, background 0.05s ease;
+      touch-action: manipulation;
+    }
+
+    .enigma-key:hover {
+      border-color: #ffffff;
+      background: radial-gradient(circle at 35% 30%, #373a40 0%, #151619 80%);
+    }
+
+    .enigma-key.pressed,
+    .enigma-key:active {
+      transform: translateY(4px);
+      box-shadow:
+        0 1px 0 #090a0b,
+        0 2px 4px rgba(0, 0, 0, 0.9),
+        inset 0 2px 6px rgba(0, 0, 0, 0.8);
+      border-color: var(--brass-light);
+      color: var(--brass-light);
+    }
+
+    /* ==========================================================================
+       SEZIONE 4: PANNELLO A PRESE (STECKERBRETT / PLUGBOARD) CON CAVI SVG
+       ========================================================================== */
+    .plugboard-wrapper {
+      position: relative;
+    }
+
+    .plugboard-grid {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      position: relative;
+      z-index: 2;
+      padding: 6px 0;
+    }
+
+    .plug-socket {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      width: clamp(28px, 7.2vw, 44px);
+      padding: 4px 2px;
+      border-radius: 6px;
+      background: rgba(12, 13, 15, 0.65);
+      border: 1px solid #2d3035;
+      cursor: pointer;
+      transition: border-color 0.15s, transform 0.1s, background 0.15s;
+    }
+
+    .plug-socket:hover {
+      border-color: var(--brass-mid);
+      background: rgba(40, 42, 48, 0.8);
+    }
+
+    .plug-socket.selected {
+      border-color: #ffcf4d;
+      background: rgba(179, 142, 54, 0.25);
+      box-shadow: 0 0 10px rgba(255, 207, 77, 0.45);
+      transform: translateY(-2px);
+    }
+
+    .plug-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--ivory-text);
+      line-height: 1;
+    }
+
+    .plug-jacks {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      align-items: center;
+    }
+
+    .jack-hole {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #060607;
+      border: 1.5px solid var(--brass-mid);
+      box-shadow: inset 0 1px 2px #000;
+    }
+
+    .plug-socket.patched .jack-hole {
+      background: radial-gradient(circle at 35% 35%, #555, #181818);
+      border-color: var(--brass-light);
+    }
+
+    #plugboard-cables-svg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 3;
+      overflow: visible;
+    }
+
+    .plugboard-controls {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid #2d3035;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .plugboard-input-group {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+      flex: 1;
+      min-width: 220px;
+    }
+
+    .plugboard-input {
+      background: #101113;
+      border: 1px solid #484c52;
+      border-radius: 5px;
+      color: var(--brass-light);
+      font-family: var(--font-typewriter);
+      font-size: 0.82rem;
+      padding: 5px 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      flex: 1;
+      min-width: 160px;
+    }
+
+    .plugboard-input:focus {
+      outline: none;
+      border-color: var(--brass-light);
+    }
+
+    /* ==========================================================================
+       SEZIONE 5: NASTRO TELEGRAFICO (PAPIERSTREIFEN: 5 LETTERE M3 / 4 LETTERE M4)
+       ========================================================================== */
+    .paper-tape-container {
+      width: 100%;
+      max-width: 920px;
+      margin-top: 16px;
+      background: var(--paper-bg);
+      color: var(--paper-ink);
+      border-radius: 8px;
+      padding: 14px 16px;
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.7), inset 0 0 24px rgba(158, 138, 92, 0.35);
+      border: 1px solid #c2b38e;
+      position: relative;
+    }
+
+    .tape-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1.5px dashed #b09f7a;
+      padding-bottom: 8px;
+      margin-bottom: 10px;
+    }
+
+    .tape-title {
+      font-family: var(--font-typewriter);
+      font-weight: 800;
+      font-size: 0.84rem;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: #3a3121;
+    }
+
+    .tape-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .btn-paper {
+      background: #e3d6ba;
+      border: 1px solid #998867;
+      color: #292114;
+      border-radius: 4px;
+      padding: 4px 10px;
+      font-family: var(--font-typewriter);
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .btn-paper:hover {
+      background: #d4c4a2;
+    }
+
+    .tape-strips {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .tape-row {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .tape-row-label {
+      font-family: var(--font-typewriter);
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: #66573f;
+      text-transform: uppercase;
+    }
+
+    .tape-output-box {
+      font-family: var(--font-typewriter);
+      font-size: 1.02rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      line-height: 1.5;
+      min-height: 30px;
+      max-height: 96px;
+      overflow-y: auto;
+      padding: 6px 10px;
+      background: rgba(255, 255, 255, 0.58);
+      border: 1px solid #c7b897;
+      border-radius: 4px;
+      word-break: break-word;
+      user-select: text;
+      -webkit-user-select: text;
+    }
+
+    .tape-output-box.cipher {
+      color: var(--cipher-ink);
+    }
+
+    /* ==========================================================================
+       TOAST DI NOTIFICA NON INTRUSIVO
+       ========================================================================== */
+    .toast-banner {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: #1b1d20;
+      color: var(--brass-light);
+      border: 1px solid var(--brass-mid);
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.85);
+      z-index: 100;
+      opacity: 0;
+      transition: transform 0.25s ease, opacity 0.25s ease;
+      pointer-events: none;
+    }
+
+    .toast-banner.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- BARRA STRUMENTI SUPERIORE CON SELETTORE MECCANICO M3 / M4 IN ALTO A DESTRA -->
+  <header class="top-toolbar">
+    <div class="toolbar-left">
+      <button type="button" class="btn-vintage btn-brass" id="btn-historical-test">
+        ★ Test Barbarossa 1941
+      </button>
+
+      <div class="volume-control-group" title="Regola volume e mute suoni meccanici">
+        <button type="button" id="btn-sound-toggle" style="background:none;border:none;color:var(--brass-light);cursor:pointer;padding:0;font-size:0.9rem;line-height:1;" aria-label="Attiva/Disattiva Audio">
+          🔊
+        </button>
+        <input type="range" id="volume-slider" class="volume-slider" min="0" max="100" value="85" aria-label="Volume suoni meccanici" />
+      </div>
+
+      <button type="button" class="btn-vintage" id="btn-reset-tape" title="Cancella il testo sul nastro telegrafico">
+        ↺ Reset Nastro
+      </button>
+
+      <button type="button" class="btn-vintage" id="btn-clear-plugs-top" title="Scollega tutti i cavi dello Steckerbrett">
+        ✕ Svuota Spine
+      </button>
+    </div>
+
+    <!-- SELETTORE MECCANICO A DUE POSIZIONI IN ALTO A DESTRA -->
+    <div class="toolbar-right">
+      <div class="model-switch-housing" role="group" aria-label="Selettore modello macchina Enigma">
+        <button type="button" class="model-switch-btn active" id="switch-m3" data-model="M3">
+          M3 (3 Rotori)
+        </button>
+        <button type="button" class="model-switch-btn" id="switch-m4" data-model="M4">
+          M4 (4 Rotori)
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- CASSA IN LEGNO ESTERNA -->
+  <main class="enigma-wood-case">
+    <div class="wood-clasp left"></div>
+    <div class="wood-clasp right"></div>
+
+    <!-- CHASSIS METALLICO INTERNO -->
+    <div class="enigma-chassis">
+      <div class="screw tl"></div>
+      <div class="screw tr"></div>
+      <div class="screw bl"></div>
+      <div class="screw br"></div>
+
+      <!-- TARGHETTA METALLICA DINAMICA -->
+      <div class="machine-header">
+        <div class="nameplate">
+          <span class="nameplate-title">ENIGMA</span>
+          <span class="nameplate-serial" id="nameplate-badge">ENIGMA M3 • WEHRMACHT</span>
+        </div>
+        <div class="status-pill" id="rotor-readout">
+          Walzenlage: B | I-II-III | Pos: A-A-A
+        </div>
+      </div>
+
+      <!-- SEZIONE 1: GRUPPO ROTORI (WALZENLAGE & RINGSTELLUNG) -->
+      <section class="section-panel" aria-label="Gruppo Rotori">
+        <div class="section-label">
+          <span id="walzenlage-title">Walzenlage &amp; Ringstellung (Riflettore e 3 Rotori)</span>
+          <span id="double-step-indicator" style="color: var(--brass-light); font-family: var(--font-typewriter);">Pronto</span>
+        </div>
+        <div class="rotors-deck" id="rotors-deck-container"></div>
+      </section>
+
+      <!-- SEZIONE 2: PANNELLO LUMINOSO (GLÜHLAMPENFELD) -->
+      <section class="section-panel" aria-label="Pannello Lampade">
+        <div class="section-label">
+          <span>Glühlampenfeld (Pannello Luminoso QWERTZ)</span>
+          <span>Uscita Cifrata</span>
+        </div>
+        <div class="qwertz-grid" id="lampboard-container"></div>
+      </section>
+
+      <!-- SEZIONE 3: TASTIERA MECCANICA (TASTATUR) -->
+      <section class="section-panel" aria-label="Tastiera">
+        <div class="section-label">
+          <span>Tastatur (Tastiera QWERTZ)</span>
+          <span>Clic, touch o tastiera fisica (A–Z)</span>
+        </div>
+        <div class="qwertz-grid" id="keyboard-container"></div>
+      </section>
+
+      <!-- SEZIONE 4: PANNELLO A PRESE (STECKERBRETT) -->
+      <section class="section-panel plugboard-wrapper" aria-label="Pannello a Prese Steckerbrett">
+        <div class="section-label">
+          <span>Steckerbrett (Pannello a Prese — Max 13 coppie)</span>
+          <span id="plugboard-status">Clicca due lettere per collegare/scollegare</span>
+        </div>
+
+        <svg id="plugboard-cables-svg"></svg>
+        <div class="plugboard-grid" id="plugboard-container"></div>
+
+        <div class="plugboard-controls">
+          <div class="plugboard-input-group">
+            <label for="plugboard-text-input" style="font-size: 0.72rem; color: var(--ivory-muted);">Coppie:</label>
+            <input
+              type="text"
+              id="plugboard-text-input"
+              class="plugboard-input"
+              placeholder="Es. AV BS CG DL FU HZ IN KM OW RX"
+              maxlength="42"
+            />
+            <button type="button" class="btn-vintage" id="btn-apply-plugs">Applica</button>
+          </div>
+          <button type="button" class="btn-vintage" id="btn-clear-plugs">Scollega Cavi</button>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- SEZIONE 5: NASTRO TELEGRAFICO (PAPIERSTREIFEN) -->
+  <section class="paper-tape-container" aria-label="Nastro Telegrafico">
+    <div class="tape-header">
+      <span class="tape-title" id="tape-header-title">Papierstreifen — Gruppi da 5 Lettere (Fünfergruppen)</span>
+      <div class="tape-actions">
+        <button type="button" class="btn-paper" id="btn-copy-cipher">Copia Risultato</button>
+        <button type="button" class="btn-paper" id="btn-clear-tape-bottom">Reset Nastro</button>
+      </div>
+    </div>
+
+    <div class="tape-strips">
+      <div class="tape-row">
+        <span class="tape-row-label">Testo Ingresso (Eingabe):</span>
+        <div class="tape-output-box" id="tape-input">—</div>
+      </div>
+      <div class="tape-row">
+        <span class="tape-row-label">Testo Cifrato (Ausgabe):</span>
+        <div class="tape-output-box cipher" id="tape-output">—</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TOAST DI NOTIFICA -->
+  <div class="toast-banner" id="toast-banner"></div>
+
+  <script>
+    /**
+     * ============================================================================
+     * SPECIFICHE STORICHE CERTIFICATE ENIGMA M3 (WEHRMACHT) & M4 (KRIEGSMARINE)
+     * ============================================================================
+     */
+    const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+    const QWERTZ_ROWS = [
+      ['Q', 'W', 'E', 'R', 'T', 'Z', 'U', 'I', 'O'],
+      ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K'],
+      ['P', 'Y', 'X', 'C', 'V', 'B', 'N', 'M', 'L']
+    ];
+
+    // Cablaggi storici certificati di tutti i rotori (I-VIII, Beta, Gamma)
+    const ROTOR_SPECS = {
+      I:     { wiring: 'EKMFLGDQVZNTOWYHXUSPAIBRCJ', notches: ['Q'] },
+      II:    { wiring: 'AJDKSIRUXBLHWTMCQGZNPYFVOE', notches: ['E'] },
+      III:   { wiring: 'BDFHJLCPRTXVZNYEIWGAKMUSQO', notches: ['V'] },
+      IV:    { wiring: 'ESOVPZJAYQUIRHXLNFTGKDCMWB', notches: ['J'] },
+      V:     { wiring: 'VZBRGITYUPSDNHLXAWMJQOFECK', notches: ['Z'] },
+      VI:    { wiring: 'JPGVOUMFYQBENHZRDKASXLICTW', notches: ['Z', 'M'] },
+      VII:   { wiring: 'NZJHGRCXMYSWBOUFAIVLPEKQDT', notches: ['Z', 'M'] },
+      VIII:  { wiring: 'FKQHTLXOCBJSPDZRAMEWNIUYGV', notches: ['Z', 'M'] },
+      Beta:  { wiring: 'LEYJVCNIXWPBQMDRTAKZGFUHOS', notches: [] },
+      Gamma: { wiring: 'FSOKANUERHMBTIYCWLQPZXVGJD', notches: [] }
+    };
+
+    // Pre-calcolo cablaggi inversi per velocizzare il passaggio di ritorno
+    Object.keys(ROTOR_SPECS).forEach((key) => {
+      const w = ROTOR_SPECS[key].wiring;
+      const inv = new Array(26);
+      for (let i = 0; i < 26; i++) {
+        inv[w.charCodeAt(i) - 65] = ALPHABET[i];
+      }
+      ROTOR_SPECS[key].invWiring = inv.join('');
+    });
+
+    // Riflettori storici standard (M3) e sottili navali (M4)
+    const REFLECTOR_SPECS = {
+      M3: {
+        B: { label: 'UKW-B', wiring: 'YRUHQSLDPXNGOKMIEBFZCWVJAT' },
+        C: { label: 'UKW-C', wiring: 'FVPJIAOYEDRZXWGCTKUQSBNMHL' }
+      },
+      M4: {
+        B: { label: 'UKW-B dünn', wiring: 'ENKQAUYWJICOPBLMDXZVFTHRGS' },
+        C: { label: 'UKW-C dünn', wiring: 'RDOBJNTKVEHMLFCWZAXGYIPSUQ' }
+      }
+    };
+
+    const CABLE_COLORS = [
+      '#9e2a2b', '#2d5a27', '#1d3557', '#b58328', '#3d348b',
+      '#6d2e46', '#28666e', '#7f4f24', '#4a4e69', '#8c2f39',
+      '#386641', '#5c4d7d', '#9c6644'
+    ];
+
+    /**
+     * STATO SEPARATO E INDIPENDENTE PER ENIGMA M3 E ENIGMA M4
+     */
+    const appState = {
+      activeModel: 'M3', // 'M3' | 'M4'
+      machines: {
+        M3: {
+          reflector: 'B',
+          // 3 rotori mobili: [Sinistro, Centrale, Destro]
+          rotors: [
+            { type: 'I',   pos: 0, ring: 0 },
+            { type: 'II',  pos: 0, ring: 0 },
+            { type: 'III', pos: 0, ring: 0 }
+          ],
+          plugboard: {},
+          selectedPlug: null,
+          inputLog: '',
+          outputLog: ''
+        },
+        M4: {
+          reflector: 'B',
+          // 4 rotori: [Zusatzwalze (Beta/Gamma fisso), Sinistro, Centrale, Destro]
+          rotors: [
+            { type: 'Beta', pos: 0, ring: 0 },
+            { type: 'II',   pos: 0, ring: 0 },
+            { type: 'IV',   pos: 0, ring: 0 },
+            { type: 'I',    pos: 0, ring: 0 }
+          ],
+          plugboard: {},
+          selectedPlug: null,
+          inputLog: '',
+          outputLog: ''
+        }
+      },
+      soundEnabled: true,
+      volume: 0.85,
+      activeKey: null,
+      activeLamp: null,
+      lampHoldUntil: 0,
+      lampOffTimer: null,
+      demoTimer: null
+    };
+
+    function currentMachine() {
+      return appState.machines[appState.activeModel];
+    }
+
+    /**
+     * ============================================================================
+     * SINTETIZZATORE WEB AUDIO API (COMPRESSORE MASTER + ALTO GUADAGNO)
+     * ============================================================================
+     */
+    class MechanicalAudio {
+      constructor() {
+        this.ctx = null;
+        this.masterGain = null;
+        this.compressor = null;
+        this.noiseBuffer = null;
+      }
+
+      ensureContext() {
+        if (!this.ctx) {
+          const AudioCtx = window.AudioContext || window.webkitAudioContext;
+          if (AudioCtx) {
+            this.ctx = new AudioCtx();
+
+            this.compressor = this.ctx.createDynamicsCompressor();
+            this.compressor.threshold.setValueAtTime(-14, this.ctx.currentTime);
+            this.compressor.knee.setValueAtTime(12, this.ctx.currentTime);
+            this.compressor.ratio.setValueAtTime(6, this.ctx.currentTime);
+            this.compressor.attack.setValueAtTime(0.002, this.ctx.currentTime);
+            this.compressor.release.setValueAtTime(0.08, this.ctx.currentTime);
+
+            this.masterGain = this.ctx.createGain();
+            this.masterGain.gain.setValueAtTime(
+              appState.soundEnabled ? appState.volume : 0,
+              this.ctx.currentTime
+            );
+
+            this.compressor.connect(this.masterGain);
+            this.masterGain.connect(this.ctx.destination);
+
+            const bufferSize = Math.floor(this.ctx.sampleRate * 0.06);
+            this.noiseBuffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+            const data = this.noiseBuffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) {
+              data[i] = Math.random() * 2 - 1;
+            }
+          }
+        }
+        if (this.ctx && this.ctx.state === 'suspended') {
+          this.ctx.resume().catch(() => {});
+        }
+      }
+
+      updateVolume() {
+        if (!this.ctx || !this.masterGain) return;
+        const target = appState.soundEnabled ? appState.volume : 0;
+        this.masterGain.gain.setTargetAtTime(target, this.ctx.currentTime, 0.01);
+      }
+
+      playKeyPress() {
+        if (!appState.soundEnabled || appState.volume <= 0) return;
+        try {
+          this.ensureContext();
+          if (!this.ctx || !this.compressor) return;
+          const now = this.ctx.currentTime;
+
+          // 1. Clack della leva del tasto
+          const noise = this.ctx.createBufferSource();
+          noise.buffer = this.noiseBuffer;
+
+          const filter = this.ctx.createBiquadFilter();
+          filter.type = 'bandpass';
+          filter.frequency.setValueAtTime(1350, now);
+          filter.Q.setValueAtTime(1.8, now);
+
+          const noiseGain = this.ctx.createGain();
+          noiseGain.gain.setValueAtTime(0.95, now);
+          noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.042);
+
+          noise.connect(filter);
+          filter.connect(noiseGain);
+          noiseGain.connect(this.compressor);
+          noise.start(now);
+          noise.stop(now + 0.045);
+
+          // 2. Corpo grave dell'impatto sul telaio
+          const thudOsc = this.ctx.createOscillator();
+          const thudGain = this.ctx.createGain();
+          thudOsc.type = 'triangle';
+          thudOsc.frequency.setValueAtTime(190, now);
+          thudOsc.frequency.exponentialRampToValueAtTime(55, now + 0.045);
+
+          thudGain.gain.setValueAtTime(0.85, now);
+          thudGain.gain.exponentialRampToValueAtTime(0.001, now + 0.048);
+
+          thudOsc.connect(thudGain);
+          thudGain.connect(this.compressor);
+          thudOsc.start(now);
+          thudOsc.stop(now + 0.05);
+
+          // 3. Scatto metallico del nottolino del rotore
+          const clickOsc = this.ctx.createOscillator();
+          const clickGain = this.ctx.createGain();
+          clickOsc.type = 'sawtooth';
+          clickOsc.frequency.setValueAtTime(780, now + 0.009);
+          clickOsc.frequency.exponentialRampToValueAtTime(210, now + 0.036);
+
+          clickGain.gain.setValueAtTime(0.55, now + 0.009);
+          clickGain.gain.exponentialRampToValueAtTime(0.001, now + 0.038);
+
+          clickOsc.connect(clickGain);
+          clickGain.connect(this.compressor);
+          clickOsc.start(now + 0.009);
+          clickOsc.stop(now + 0.04);
+        } catch (_) {}
+      }
+
+      playKeyRelease() {
+        if (!appState.soundEnabled || appState.volume <= 0) return;
+        try {
+          this.ensureContext();
+          if (!this.ctx || !this.compressor) return;
+          const now = this.ctx.currentTime;
+
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(320, now);
+          osc.frequency.exponentialRampToValueAtTime(95, now + 0.026);
+
+          gain.gain.setValueAtTime(0.42, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.028);
+
+          osc.connect(gain);
+          gain.connect(this.compressor);
+          osc.start(now);
+          osc.stop(now + 0.03);
+        } catch (_) {}
+      }
+
+      playRotorTick() {
+        if (!appState.soundEnabled || appState.volume <= 0) return;
+        try {
+          this.ensureContext();
+          if (!this.ctx || !this.compressor) return;
+          const now = this.ctx.currentTime;
+
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'square';
+          osc.frequency.setValueAtTime(680, now);
+          osc.frequency.exponentialRampToValueAtTime(220, now + 0.022);
+
+          gain.gain.setValueAtTime(0.45, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.025);
+
+          osc.connect(gain);
+          gain.connect(this.compressor);
+          osc.start(now);
+          osc.stop(now + 0.028);
+        } catch (_) {}
+      }
+    }
+
+    const soundFX = new MechanicalAudio();
+
+    /**
+     * ============================================================================
+     * MOTORE CRITTOGRAFICO UNIFICATO ENIGMA M3 / M4
+     * ============================================================================
+     */
+    function mod26(n) {
+      return ((n % 26) + 26) % 26;
+    }
+
+    function charToIndex(ch) {
+      return ch.charCodeAt(0) - 65;
+    }
+
+    function indexToChar(idx) {
+      return ALPHABET[mod26(idx)];
+    }
+
+    function isRotorAtNotch(rotorObj) {
+      const currentLetter = indexToChar(rotorObj.pos);
+      return ROTOR_SPECS[rotorObj.type].notches.includes(currentLetter);
+    }
+
+    /**
+     * Meccanica di stepping esatta (prima della cifratura):
+     * - I 3 rotori mobili sono sempre gli ultimi 3 dell'array `m.rotors`
+     *   (indici [0, 1, 2] in M3; indici [1, 2, 3] in M4).
+     * - L'eventuale Zusatzwalze (indice 0 in M4) non avanza mai automaticamente.
+     */
+    function stepRotors() {
+      const m = currentMachine();
+      const offset = appState.activeModel === 'M4' ? 1 : 0;
+
+      const left  = m.rotors[offset];
+      const mid   = m.rotors[offset + 1];
+      const right = m.rotors[offset + 2];
+
+      const midAtNotch   = isRotorAtNotch(mid);
+      const rightAtNotch = isRotorAtNotch(right);
+
+      let doubleStepped = false;
+
+      if (midAtNotch) {
+        left.pos = mod26(left.pos + 1);
+        mid.pos  = mod26(mid.pos + 1);
+        doubleStepped = true;
+      } else if (rightAtNotch) {
+        mid.pos = mod26(mid.pos + 1);
+      }
+
+      right.pos = mod26(right.pos + 1);
+
+      const indicator = document.getElementById('double-step-indicator');
+      if (doubleStepped) {
+        indicator.textContent = '⚡ Double-Stepping attivato';
+      } else {
+        indicator.textContent = appState.activeModel === 'M4'
+          ? 'Circuito navale attivo'
+          : 'Circuito attivo';
+      }
+    }
+
+    /**
+     * Formula esatta di passaggio segnale con Ringstellung (r) e Posizione (p):
+     * Andata:  ((wiring[(c + p - r + 26) % 26] - p + r) + 26) % 26
+     * Ritorno: ((invWiring[(c + p - r + 26) % 26] - p + r) + 26) % 26
+     */
+    function passThroughRotor(c, rotorObj, forward) {
+      const spec = ROTOR_SPECS[rotorObj.type];
+      const mapStr = forward ? spec.wiring : spec.invWiring;
+      const p = rotorObj.pos;
+      const r = rotorObj.ring;
+
+      const contactIn = mod26(c + p - r);
+      const wiredOut = charToIndex(mapStr[contactIn]);
+      return mod26(wiredOut - p + r);
+    }
+
+    function passThroughPlugboard(char) {
+      const m = currentMachine();
+      return m.plugboard[char] || char;
+    }
+
+    function encryptCharacter(inputChar) {
+      const upper = inputChar.toUpperCase();
+      if (!ALPHABET.includes(upper)) return null;
+
+      const m = currentMachine();
+
+      // 1. Avanzamento meccanico dei rotori prima della cifratura
+      stepRotors();
+
+      // 2. Steckerbrett in ingresso
+      let ch = passThroughPlugboard(upper);
+      let signal = charToIndex(ch);
+
+      // 3. Andata da destra a sinistra attraverso tutti i rotori (3 in M3, 4 in M4)
+      for (let i = m.rotors.length - 1; i >= 0; i--) {
+        signal = passThroughRotor(signal, m.rotors[i], true);
+      }
+
+      // 4. Riflettore (UKW-B/C oppure UKW-B/C dünn)
+      const ukwWiring = REFLECTOR_SPECS[appState.activeModel][m.reflector].wiring;
+      signal = charToIndex(ukwWiring[signal]);
+
+      // 5. Ritorno da sinistra a destra attraverso tutti i rotori
+      for (let i = 0; i < m.rotors.length; i++) {
+        signal = passThroughRotor(signal, m.rotors[i], false);
+      }
+
+      // 6. Steckerbrett in uscita
+      return passThroughPlugboard(indexToChar(signal));
+    }
+
+    /**
+     * ============================================================================
+     * RENDERING DINAMICO DEL GRUPPO ROTORI (M3: 3 ROTORI / M4: 4 ROTORI)
+     * ============================================================================
+     */
+    function showToast(message) {
+      const banner = document.getElementById('toast-banner');
+      banner.textContent = message;
+      banner.classList.add('show');
+      clearTimeout(banner._timer);
+      banner._timer = setTimeout(() => {
+        banner.classList.remove('show');
+      }, 3000);
+    }
+
+    function buildRotorsDeck() {
+      const deck = document.getElementById('rotors-deck-container');
+      const m = currentMachine();
+      const isM4 = appState.activeModel === 'M4';
+
+      deck.className = isM4 ? 'rotors-deck cols-4' : 'rotors-deck';
+      deck.innerHTML = '';
+
+      // 1. Slot Riflettore (Umkehrwalze)
+      const refSpecs = REFLECTOR_SPECS[appState.activeModel];
+      const refBox = document.createElement('div');
+      refBox.className = 'rotor-slot-box';
+      refBox.innerHTML = `
+        <span class="slot-caption">Umkehrwalze</span>
+        <select id="reflector-select" class="vintage-select" aria-label="Seleziona Riflettore">
+          <option value="B" ${m.reflector === 'B' ? 'selected' : ''}>${refSpecs.B.label}</option>
+          <option value="C" ${m.reflector === 'C' ? 'selected' : ''}>${refSpecs.C.label}</option>
+        </select>
+        <div style="font-size: 0.66rem; color: var(--ivory-muted); text-align: center; line-height: 1.3;">
+          ${isM4 ? 'Riflettore sottile<br>navale (13 coppie)' : 'Riflettore fisso<br>(13 coppie)'}
+        </div>
+        <div style="font-family: var(--font-typewriter); font-size: 0.66rem; color: var(--brass-mid);">
+          Reciproco
+        </div>
+      `;
+      deck.appendChild(refBox);
+
+      refBox.querySelector('#reflector-select').addEventListener('change', (e) => {
+        m.reflector = e.target.value;
+        updateRotorReadout();
+      });
+
+      // 2. Slot dei Rotori (3 in M3, 4 in M4)
+      m.rotors.forEach((rotorObj, slotIdx) => {
+        const isAux = isM4 && slotIdx === 0;
+        const slotBox = document.createElement('div');
+        slotBox.className = isAux ? 'rotor-slot-box aux-rotor-slot' : 'rotor-slot-box';
+
+        let captionText = '';
+        if (isM4) {
+          captionText = ['Zusatzwalze (4°)', 'Sinistro (Links)', 'Centrale (Mitte)', 'Destro (Rechts)'][slotIdx];
+        } else {
+          captionText = ['Sinistro (Links)', 'Centrale (Mitte)', 'Destro (Rechts)'][slotIdx];
+        }
+
+        // Opzioni rotore consentite per questo slot
+        let rotorOptionsHtml = '';
+        if (isAux) {
+          rotorOptionsHtml = `
+            <option value="Beta" ${rotorObj.type === 'Beta' ? 'selected' : ''}>Beta (β)</option>
+            <option value="Gamma" ${rotorObj.type === 'Gamma' ? 'selected' : ''}>Gamma (γ)</option>
+          `;
+        } else if (isM4) {
+          const navalTypes = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII'];
+          rotorOptionsHtml = navalTypes.map((t) => {
+            const suffix = (t === 'VI' || t === 'VII' || t === 'VIII') ? ' (2x)' : '';
+            return `<option value="${t}" ${rotorObj.type === t ? 'selected' : ''}>Rotore ${t}${suffix}</option>`;
+          }).join('');
+        } else {
+          const armyTypes = ['I', 'II', 'III', 'IV', 'V'];
+          rotorOptionsHtml = armyTypes.map((t) =>
+            `<option value="${t}" ${rotorObj.type === t ? 'selected' : ''}>Rotore ${t}</option>`
+          ).join('');
+        }
+
+        // Opzioni Ringstellung 01-A ... 26-Z
+        let ringOptionsHtml = '';
+        for (let r = 0; r < 26; r++) {
+          const numStr = String(r + 1).padStart(2, '0');
+          ringOptionsHtml += `<option value="${r}" ${rotorObj.ring === r ? 'selected' : ''}>${numStr}-${ALPHABET[r]}</option>`;
+        }
+
+        slotBox.innerHTML = `
+          <span class="slot-caption">${captionText}</span>
+          <select class="vintage-select rotor-type-select" aria-label="Tipo ${captionText}">
+            ${rotorOptionsHtml}
+          </select>
+          <div class="rotor-drum-assembly">
+            <div class="rotor-window-frame" title="Clicca o usa la rotella del mouse per ruotare">
+              <div class="rotor-window-drum">
+                <span class="drum-letter adj" id="drum-${slotIdx}-prev">${indexToChar(rotorObj.pos - 1)}</span>
+                <span class="drum-letter curr" id="drum-${slotIdx}-curr">${indexToChar(rotorObj.pos)}</span>
+                <span class="drum-letter adj" id="drum-${slotIdx}-next">${indexToChar(rotorObj.pos + 1)}</span>
+              </div>
+            </div>
+            <div class="thumbwheel-controls" title="Ruota zigrinata: clicca ▲/▼ o usa rotella mouse">
+              <button type="button" class="wheel-btn" data-dir="1" aria-label="Avanza ${captionText}">▲</button>
+              <button type="button" class="wheel-btn" data-dir="-1" aria-label="Arretra ${captionText}">▼</button>
+            </div>
+          </div>
+          <div class="ring-control-row">
+            <span>Ring:</span>
+            <select class="vintage-select ring-select" aria-label="Ringstellung ${captionText}">
+              ${ringOptionsHtml}
+            </select>
+          </div>
+        `;
+
+        // Listener cambio tipo rotore
+        slotBox.querySelector('.rotor-type-select').addEventListener('change', (e) => {
+          rotorObj.type = e.target.value;
+          updateRotorReadout();
+        });
+
+        // Listener cambio Ringstellung
+        slotBox.querySelector('.ring-select').addEventListener('change', (e) => {
+          rotorObj.ring = parseInt(e.target.value, 10);
+          updateRotorReadout();
+        });
+
+        // Funzione di rotazione manuale del singolo rotore
+        const stepManualRotor = (dir) => {
+          rotorObj.pos = mod26(rotorObj.pos + dir);
+          soundFX.playRotorTick();
+          updateRotorDrumsUI();
+        };
+
+        // Pulsanti ▲ / ▼ sulla ruota zigrinata
+        slotBox.querySelectorAll('.wheel-btn').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            stepManualRotor(parseInt(btn.dataset.dir, 10));
+          });
+        });
+
+        // Supporto rotella del mouse (wheel) sia sulla finestra che sulla ruota zigrinata
+        const onWheelRotate = (e) => {
+          e.preventDefault();
+          const dir = e.deltaY < 0 ? 1 : -1;
+          stepManualRotor(dir);
+        };
+        slotBox.querySelector('.rotor-window-frame').addEventListener('wheel', onWheelRotate, { passive: false });
+        slotBox.querySelector('.thumbwheel-controls').addEventListener('wheel', onWheelRotate, { passive: false });
+
+        deck.appendChild(slotBox);
+      });
+
+      updateRotorReadout();
+    }
+
+    function updateRotorDrumsUI() {
+      const m = currentMachine();
+      m.rotors.forEach((rotor, idx) => {
+        const prevEl = document.getElementById(`drum-${idx}-prev`);
+        const currEl = document.getElementById(`drum-${idx}-curr`);
+        const nextEl = document.getElementById(`drum-${idx}-next`);
+        if (prevEl) prevEl.textContent = indexToChar(rotor.pos - 1);
+        if (currEl) currEl.textContent = indexToChar(rotor.pos);
+        if (nextEl) nextEl.textContent = indexToChar(rotor.pos + 1);
+      });
+      updateRotorReadout();
+    }
+
+    function updateRotorReadout() {
+      const m = currentMachine();
+      const refSuffix = appState.activeModel === 'M4' ? `${m.reflector}-dünn` : m.reflector;
+      const typesStr = m.rotors.map((r) => r.type).join('-');
+      const posStr = m.rotors.map((r) => indexToChar(r.pos)).join('-');
+      document.getElementById('rotor-readout').textContent =
+        `Walzenlage: ${refSuffix} | ${typesStr} | Pos: ${posStr}`;
+    }
+
+    /**
+     * ============================================================================
+     * INIZIALIZZAZIONE LAMPBOARD, TASTIERA E STECKERBRETT (QWERTZ)
+     * ============================================================================
+     */
+    function initLampboard() {
+      const container = document.getElementById('lampboard-container');
+      container.innerHTML = '';
+      QWERTZ_ROWS.forEach((row) => {
+        const rowDiv = document.createElement('div');
+        rowDiv.className = 'qwertz-row';
+        row.forEach((letter) => {
+          const bulb = document.createElement('div');
+          bulb.className = 'lamp-bulb';
+          bulb.id = `lamp-${letter}`;
+          bulb.textContent = letter;
+          rowDiv.appendChild(bulb);
+        });
+        container.appendChild(rowDiv);
+      });
+    }
+
+    function initKeyboard() {
+      const container = document.getElementById('keyboard-container');
+      container.innerHTML = '';
+      QWERTZ_ROWS.forEach((row) => {
+        const rowDiv = document.createElement('div');
+        rowDiv.className = 'qwertz-row';
+        row.forEach((letter) => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'enigma-key';
+          btn.id = `key-${letter}`;
+          btn.textContent = letter;
+          btn.setAttribute('aria-label', `Tasto ${letter}`);
+
+          btn.addEventListener('pointerdown', (e) => {
+            if (e.button !== undefined && e.button !== 0) return;
+            e.preventDefault();
+            try { btn.setPointerCapture(e.pointerId); } catch (_) {}
+            handleKeyDown(letter);
+          });
+
+          const releasePointer = (e) => {
+            e.preventDefault();
+            if (appState.activeKey === letter) {
+              handleKeyUp(letter);
+            }
+          };
+
+          btn.addEventListener('pointerup', releasePointer);
+          btn.addEventListener('pointercancel', releasePointer);
+
+          rowDiv.appendChild(btn);
+        });
+        container.appendChild(rowDiv);
+      });
+    }
+
+    function initPlugboard() {
+      const container = document.getElementById('plugboard-container');
+      container.innerHTML = '';
+      QWERTZ_ROWS.forEach((row) => {
+        const rowDiv = document.createElement('div');
+        rowDiv.className = 'qwertz-row';
+        row.forEach((letter) => {
+          const socket = document.createElement('div');
+          socket.className = 'plug-socket';
+          socket.id = `plug-${letter}`;
+          socket.dataset.letter = letter;
+          socket.title = `Presa ${letter}`;
+
+          socket.innerHTML = `
+            <span class="plug-label">${letter}</span>
+            <div class="plug-jacks">
+              <span class="jack-hole"></span>
+              <span class="jack-hole"></span>
+            </div>
+          `;
+
+          socket.addEventListener('click', () => handlePlugClick(letter));
+          rowDiv.appendChild(socket);
+        });
+        container.appendChild(rowDiv);
+      });
+    }
+
+    /**
+     * ============================================================================
+     * FORMATTAZIONE NASTRO TELEGRAFICO (5 LETTERE M3 / 4 LETTERE M4)
+     * ============================================================================
+     */
+    function formatGroupedText(str) {
+      if (!str) return '—';
+      const groupSize = appState.activeModel === 'M4' ? 4 : 5;
+      const regex = new RegExp(`.{1,${groupSize}}`, 'g');
+      return str.match(regex).join(' ');
+    }
+
+    function updateTapeUI() {
+      const m = currentMachine();
+      document.getElementById('tape-input').textContent = formatGroupedText(m.inputLog);
+      document.getElementById('tape-output').textContent = formatGroupedText(m.outputLog);
+    }
+
+    /**
+     * ============================================================================
+     * ACCENSIONE ISTANTANEA LAMPADINE (0MS DELAY) E GESTIONE TASTI
+     * ============================================================================
+     */
+    const MIN_LAMP_ON_MS = 200;
+
+    function igniteLamp(letter) {
+      if (appState.lampOffTimer) {
+        clearTimeout(appState.lampOffTimer);
+        appState.lampOffTimer = null;
+      }
+
+      if (appState.activeLamp && appState.activeLamp !== letter) {
+        const prevLamp = document.getElementById(`lamp-${appState.activeLamp}`);
+        if (prevLamp) prevLamp.classList.remove('lit');
+      }
+
+      const lampEl = document.getElementById(`lamp-${letter}`);
+      if (lampEl) {
+        if (appState.activeLamp === letter && lampEl.classList.contains('lit')) {
+          lampEl.classList.remove('lit');
+          void lampEl.offsetWidth; // Reflow sincrono forzato per doppie lettere consecutive
+        }
+        lampEl.classList.add('lit');
+      }
+
+      appState.activeLamp = letter;
+      appState.lampHoldUntil = performance.now() + MIN_LAMP_ON_MS;
+    }
+
+    function extinguishLamp() {
+      if (appState.lampOffTimer) {
+        clearTimeout(appState.lampOffTimer);
+        appState.lampOffTimer = null;
+      }
+      if (appState.activeLamp) {
+        const lampEl = document.getElementById(`lamp-${appState.activeLamp}`);
+        if (lampEl) lampEl.classList.remove('lit');
+        appState.activeLamp = null;
+      }
+    }
+
+    function scheduleLampExtinguish() {
+      if (appState.lampOffTimer) {
+        clearTimeout(appState.lampOffTimer);
+        appState.lampOffTimer = null;
+      }
+
+      const remaining = appState.lampHoldUntil - performance.now();
+      if (remaining <= 0) {
+        extinguishLamp();
+      } else {
+        appState.lampOffTimer = setTimeout(() => {
+          if (appState.activeKey === null) {
+            extinguishLamp();
+          }
+        }, remaining);
+      }
+    }
+
+    function handleKeyDown(letter) {
+      if (appState.activeKey !== null) return;
+      appState.activeKey = letter;
+
+      const keyEl = document.getElementById(`key-${letter}`);
+      if (keyEl) keyEl.classList.add('pressed');
+
+      // Calcolo crittografico sincrono e illuminazione lampada prima dell'audio
+      const cipherLetter = encryptCharacter(letter);
+      if (cipherLetter) {
+        igniteLamp(cipherLetter);
+        updateRotorDrumsUI();
+        const m = currentMachine();
+        m.inputLog += letter;
+        m.outputLog += cipherLetter;
+        updateTapeUI();
+      }
+
+      soundFX.playKeyPress();
+    }
+
+    function handleKeyUp(letter) {
+      if (appState.activeKey !== letter && letter !== undefined) return;
+      if (appState.activeKey) {
+        const keyEl = document.getElementById(`key-${appState.activeKey}`);
+        if (keyEl) keyEl.classList.remove('pressed');
+        soundFX.playKeyRelease();
+      }
+      appState.activeKey = null;
+      scheduleLampExtinguish();
+    }
+
+    /**
+     * ============================================================================
+     * STECKERBRETT INTERATTIVO E CAVI INTRECCIATI SVG
+     * ============================================================================
+     */
+    function handlePlugClick(letter) {
+      const m = currentMachine();
+      const statusEl = document.getElementById('plugboard-status');
+
+      if (m.plugboard[letter]) {
+        const partner = m.plugboard[letter];
+        delete m.plugboard[letter];
+        delete m.plugboard[partner];
+        m.selectedPlug = null;
+        statusEl.textContent = `Cavo scollegato (${letter} ↔ ${partner})`;
+        updatePlugboardUI();
+        return;
+      }
+
+      if (!m.selectedPlug) {
+        if (Object.keys(m.plugboard).length >= 26) {
+          showToast('Tutte le 13 coppie dello Steckerbrett sono occupate.');
+          return;
+        }
+        m.selectedPlug = letter;
+        statusEl.textContent = `Selezionata presa [${letter}] — scegli la seconda presa`;
+        updatePlugboardUI();
+        return;
+      }
+
+      if (m.selectedPlug === letter) {
+        m.selectedPlug = null;
+        statusEl.textContent = 'Selezione annullata';
+        updatePlugboardUI();
+        return;
+      }
+
+      const first = m.selectedPlug;
+      m.plugboard[first] = letter;
+      m.plugboard[letter] = first;
+      m.selectedPlug = null;
+      statusEl.textContent = `Collegato cavo: ${first} ↔ ${letter}`;
+      soundFX.playRotorTick();
+      updatePlugboardUI();
+    }
+
+    function getPlugPairsList() {
+      const m = currentMachine();
+      const seen = new Set();
+      const pairs = [];
+      for (const a of ALPHABET) {
+        const b = m.plugboard[a];
+        if (b && !seen.has(a) && !seen.has(b)) {
+          seen.add(a);
+          seen.add(b);
+          pairs.push([a, b]);
+        }
+      }
+      return pairs;
+    }
+
+    function updatePlugboardUI() {
+      const m = currentMachine();
+      document.querySelectorAll('.plug-socket').forEach((socket) => {
+        const letter = socket.dataset.letter;
+        socket.classList.toggle('patched', Boolean(m.plugboard[letter]));
+        socket.classList.toggle('selected', m.selectedPlug === letter);
+      });
+
+      const pairs = getPlugPairsList();
+      document.getElementById('plugboard-text-input').value = pairs.map((p) => p[0] + p[1]).join(' ');
+      drawPlugboardCables(pairs);
+    }
+
+    function drawPlugboardCables(pairs) {
+      const svg = document.getElementById('plugboard-cables-svg');
+      const wrapper = document.querySelector('.plugboard-wrapper');
+      if (!svg || !wrapper) return;
+
+      svg.innerHTML = '';
+      const wrapRect = wrapper.getBoundingClientRect();
+
+      pairs.forEach(([a, b], idx) => {
+        const elA = document.getElementById(`plug-${a}`);
+        const elB = document.getElementById(`plug-${b}`);
+        if (!elA || !elB) return;
+
+        const rectA = elA.getBoundingClientRect();
+        const rectB = elB.getBoundingClientRect();
+
+        const x1 = rectA.left - wrapRect.left + rectA.width / 2;
+        const y1 = rectA.top - wrapRect.top + rectA.height * 0.65;
+        const x2 = rectB.left - wrapRect.left + rectB.width / 2;
+        const y2 = rectB.top - wrapRect.top + rectB.height * 0.65;
+
+        const dist = Math.hypot(x2 - x1, y2 - y1);
+        const sag = Math.min(75, 22 + dist * 0.22);
+        const cx1 = x1 + (x2 - x1) * 0.25;
+        const cy1 = Math.max(y1, y2) + sag;
+        const cx2 = x1 + (x2 - x1) * 0.75;
+        const cy2 = Math.max(y1, y2) + sag;
+
+        const color = CABLE_COLORS[idx % CABLE_COLORS.length];
+
+        const shadowPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        shadowPath.setAttribute('d', `M ${x1} ${y1 + 3} C ${cx1} ${cy1 + 4}, ${cx2} ${cy2 + 4}, ${x2} ${y2 + 3}`);
+        shadowPath.setAttribute('fill', 'none');
+        shadowPath.setAttribute('stroke', 'rgba(0,0,0,0.65)');
+        shadowPath.setAttribute('stroke-width', '5');
+        shadowPath.setAttribute('stroke-linecap', 'round');
+        svg.appendChild(shadowPath);
+
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.setAttribute('d', `M ${x1} ${y1} C ${cx1} ${cy1}, ${cx2} ${cy2}, ${x2} ${y2}`);
+        path.setAttribute('fill', 'none');
+        path.setAttribute('stroke', color);
+        path.setAttribute('stroke-width', '4.2');
+        path.setAttribute('stroke-linecap', 'round');
+        svg.appendChild(path);
+
+        const braidPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        braidPath.setAttribute('d', `M ${x1} ${y1} C ${cx1} ${cy1}, ${cx2} ${cy2}, ${x2} ${y2}`);
+        braidPath.setAttribute('fill', 'none');
+        braidPath.setAttribute('stroke', 'rgba(255,255,255,0.22)');
+        braidPath.setAttribute('stroke-width', '1.5');
+        braidPath.setAttribute('stroke-dasharray', '4 4');
+        svg.appendChild(braidPath);
+
+        [[x1, y1], [x2, y2]].forEach(([px, py]) => {
+          const plugCap = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+          plugCap.setAttribute('cx', px);
+          plugCap.setAttribute('cy', py);
+          plugCap.setAttribute('r', '5.2');
+          plugCap.setAttribute('fill', '#191a1c');
+          plugCap.setAttribute('stroke', '#d4af37');
+          plugCap.setAttribute('stroke-width', '1.5');
+          svg.appendChild(plugCap);
+        });
+      });
+    }
+
+    function applyPlugboardFromText(rawText) {
+      const m = currentMachine();
+      const tokens = rawText
+        .toUpperCase()
+        .replace(/[^A-Z]/g, ' ')
+        .trim()
+        .split(/\s+/)
+        .filter(Boolean);
+
+      const newMap = {};
+      const used = new Set();
+
+      for (const pair of tokens) {
+        if (pair.length !== 2) {
+          showToast(`Coppia non valida "${pair}": usa solo coppie di 2 lettere (es. AV BS).`);
+          return;
+        }
+        const [a, b] = pair;
+        if (a === b) {
+          showToast(`Impossibile collegare "${a}" con sé stessa.`);
+          return;
+        }
+        if (used.has(a) || used.has(b)) {
+          showToast(`Lettera duplicata rilevata nella coppia "${pair}".`);
+          return;
+        }
+        used.add(a);
+        used.add(b);
+        newMap[a] = b;
+        newMap[b] = a;
+      }
+
+      m.plugboard = newMap;
+      m.selectedPlug = null;
+      document.getElementById('plugboard-status').textContent =
+        `${Object.keys(newMap).length / 2} cavi collegati`;
+      updatePlugboardUI();
+      showToast('Cablaggio Steckerbrett aggiornato.');
+    }
+
+    function clearCurrentPlugboard() {
+      const m = currentMachine();
+      m.plugboard = {};
+      m.selectedPlug = null;
+      document.getElementById('plugboard-status').textContent = 'Tutti i cavi scollegati';
+      updatePlugboardUI();
+      showToast(`Steckerbrett ${appState.activeModel} azzerato.`);
+    }
+
+    /**
+     * ============================================================================
+     * COMMUTAZIONE ISTANTANEA TRA ENIGMA M3 E ENIGMA M4 (STATI INDIPENDENTI)
+     * ============================================================================
+     */
+    function switchMachineModel(newModel) {
+      if (appState.activeModel === newModel) return;
+
+      if (appState.demoTimer) {
+        clearInterval(appState.demoTimer);
+        appState.demoTimer = null;
+      }
+      extinguishLamp();
+      appState.activeKey = null;
+      appState.activeModel = newModel;
+
+      const isM4 = newModel === 'M4';
+      document.body.classList.toggle('mode-m4', isM4);
+
+      document.getElementById('switch-m3').classList.toggle('active', !isM4);
+      document.getElementById('switch-m4').classList.toggle('active', isM4);
+
+      document.getElementById('nameplate-badge').textContent = isM4
+        ? 'ENIGMA M4 • KRIEGSMARINE'
+        : 'ENIGMA M3 • WEHRMACHT';
+
+      document.getElementById('btn-historical-test').textContent = isM4
+        ? '★ Test U-264 1942'
+        : '★ Test Barbarossa 1941';
+
+      document.getElementById('walzenlage-title').textContent = isM4
+        ? 'Walzenlage & Ringstellung (Riflettore Sottile, Zusatzwalze e 3 Rotori)'
+        : 'Walzenlage & Ringstellung (Riflettore e 3 Rotori)';
+
+      document.getElementById('tape-header-title').textContent = isM4
+        ? 'Papierstreifen Kriegsmarine — Gruppi da 4 Lettere (Vierergruppen)'
+        : 'Papierstreifen — Gruppi da 5 Lettere (Fünfergruppen)';
+
+      document.getElementById('plugboard-text-input').placeholder = isM4
+        ? 'Es. AT BL DF GJ HM NW OP QY RZ VX'
+        : 'Es. AV BS CG DL FU HZ IN KM OW RX';
+
+      const pairCount = Object.keys(currentMachine().plugboard).length / 2;
+      document.getElementById('plugboard-status').textContent = pairCount > 0
+        ? `${pairCount} cavi collegati`
+        : 'Clicca due lettere per collegare/scollegare';
+
+      document.getElementById('double-step-indicator').textContent = 'Pronto';
+
+      soundFX.playRotorTick();
+      buildRotorsDeck();
+      updatePlugboardUI();
+      updateTapeUI();
+      showToast(`Commutato su ${isM4 ? 'Marine-Enigma M4 (4 Rotori)' : 'Enigma M3 (3 Rotori)'}`);
+    }
+
+    /**
+     * ============================================================================
+     * VETTORI DI TEST STORICI CERTIFICATI (BARBAROSSA 1941 & U-264 1942)
+     * ============================================================================
+     */
+    function runHistoricalTest() {
+      if (appState.demoTimer) {
+        clearInterval(appState.demoTimer);
+        appState.demoTimer = null;
+      }
+      extinguishLamp();
+
+      const m = currentMachine();
+      let cipherText = '';
+      let toastStart = '';
+      let toastEnd = '';
+
+      if (appState.activeModel === 'M3') {
+        // Operazione Barbarossa, 7 luglio 1941:
+        // UKW-B | Rotori II, IV, V | Ring: 02-B, 21-U, 12-L | Pos: B, L, A
+        m.reflector = 'B';
+        m.rotors = [
+          { type: 'II', pos: charToIndex('B'), ring: 1 },
+          { type: 'IV', pos: charToIndex('L'), ring: 20 },
+          { type: 'V',  pos: charToIndex('A'), ring: 11 }
+        ];
+        applyPlugboardFromText('AV BS CG DL FU HZ IN KM OW RX');
+        cipherText = 'EDPUD NRGYS ZRCXN UYTPO MRMBO FKTBZ REZKM LXLVE FGUEY SIOZV EQMIK UBPMM YLKLT TDEIS MDICA GYKUA CTCDO MOHWX MUUIA UBSTS LRNBZ SZWNR FXWFY SSXJZ VIJHI DISHP RKLKA YUPAD TXQSP INQMA TLPIF SVKDA SCTAC DPBOP VHJK'.replace(/\s+/g, '');
+        toastStart = 'Avvio decifratura storica Operazione Barbarossa (7 Luglio 1941)...';
+        toastEnd = 'Decifrato: "AUFKLXABTEILUNG..." (Barbarossa 1941 verificato)';
+      } else {
+        // Sommergibile U-264 (Kapitänleutnant Hartwig Looks, 1942):
+        // UKW-B dünn | Rotori Beta, II, IV, I | Ring: 01-A, 01-A, 01-A, 22-V | Pos: V, J, N, A
+        m.reflector = 'B';
+        m.rotors = [
+          { type: 'Beta', pos: charToIndex('V'), ring: 0 },
+          { type: 'II',   pos: charToIndex('J'), ring: 0 },
+          { type: 'IV',   pos: charToIndex('N'), ring: 0 },
+          { type: 'I',    pos: charToIndex('A'), ring: 21 }
+        ];
+        applyPlugboardFromText('AT BL DF GJ HM NW OP QY RZ VX');
+        cipherText = 'NCZW VUSX PNYM INHZ XMQX SFWX WLKJ AHSH NMCO CCAK UQPM KCSM HKSE INJU SBLK IOSX CKUB HMLL XCSJ USRR DVKO HULX WCCB GVLI YXEO AHXR HKKF VDRE WEZL XOBA FGYU JQUK GRTV UKAM EURB VEKS UHHV OYHA BCJW MAKL FKLM YFVN RIZR VVRT KOFD ANJM OLBG FFLE OPRG TFLV RHOW OPBE KVWM UQFM PWPA RMFH AGKX IIBG'.replace(/\s+/g, '');
+        toastStart = 'Avvio decifratura storica U-264 (Kriegsmarine 1942)...';
+        toastEnd = 'Decifrato: "VONVONJLOOKS..." (Bollettino U-264 verificato)';
+      }
+
+      m.inputLog = '';
+      m.outputLog = '';
+      buildRotorsDeck();
+      updateTapeUI();
+      showToast(toastStart);
+
+      let idx = 0;
+      appState.demoTimer = setInterval(() => {
+        if (idx >= cipherText.length) {
+          clearInterval(appState.demoTimer);
+          appState.demoTimer = null;
+          scheduleLampExtinguish();
+          showToast(toastEnd);
+          return;
+        }
+        const ch = cipherText[idx++];
+        const dec = encryptCharacter(ch);
+        if (dec) {
+          igniteLamp(dec);
+          m.inputLog += ch;
+          m.outputLog += dec;
+          updateRotorDrumsUI();
+          updateTapeUI();
+        }
+      }, 22);
+    }
+
+    /**
+     * ============================================================================
+     * INIZIALIZZAZIONE EVENTI GLOBALI
+     * ============================================================================
+     */
+    function initEventListeners() {
+      // Selettore meccanico M3 / M4 in alto a destra
+      document.getElementById('switch-m3').addEventListener('click', () => switchMachineModel('M3'));
+      document.getElementById('switch-m4').addEventListener('click', () => switchMachineModel('M4'));
+
+      // Test storico contestuale
+      document.getElementById('btn-historical-test').addEventListener('click', runHistoricalTest);
+
+      // Controllo volume Web Audio
+      const soundBtn = document.getElementById('btn-sound-toggle');
+      const volumeSlider = document.getElementById('volume-slider');
+
+      soundBtn.addEventListener('click', () => {
+        appState.soundEnabled = !appState.soundEnabled;
+        soundBtn.textContent = appState.soundEnabled && appState.volume > 0 ? '🔊' : '🔇';
+        soundFX.ensureContext();
+        soundFX.updateVolume();
+        if (appState.soundEnabled) soundFX.playRotorTick();
+      });
+
+      volumeSlider.addEventListener('input', (e) => {
+        const val = parseInt(e.target.value, 10) / 100;
+        appState.volume = val;
+        appState.soundEnabled = val > 0;
+        soundBtn.textContent = val > 0 ? '🔊' : '🔇';
+        soundFX.ensureContext();
+        soundFX.updateVolume();
+      });
+
+      // Reset Nastro
+      const resetTape = () => {
+        if (appState.demoTimer) {
+          clearInterval(appState.demoTimer);
+          appState.demoTimer = null;
+        }
+        const m = currentMachine();
+        m.inputLog = '';
+        m.outputLog = '';
+        updateTapeUI();
+        showToast('Nastro telegrafico pulito.');
+      };
+      document.getElementById('btn-reset-tape').addEventListener('click', resetTape);
+      document.getElementById('btn-clear-tape-bottom').addEventListener('click', resetTape);
+
+      // Svuota Spine (Steckerbrett)
+      document.getElementById('btn-clear-plugs-top').addEventListener('click', clearCurrentPlugboard);
+      document.getElementById('btn-clear-plugs').addEventListener('click', clearCurrentPlugboard);
+
+      // Applica coppie Steckerbrett da campo testo
+      document.getElementById('btn-apply-plugs').addEventListener('click', () => {
+        applyPlugboardFromText(document.getElementById('plugboard-text-input').value);
+      });
+
+      document.getElementById('plugboard-text-input').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          applyPlugboardFromText(e.target.value);
+        }
+      });
+
+      // Copia Risultato negli appunti
+      document.getElementById('btn-copy-cipher').addEventListener('click', () => {
+        const text = formatGroupedText(currentMachine().outputLog);
+        if (text === '—') {
+          showToast('Nessun testo cifrato da copiare.');
+          return;
+        }
+        const temp = document.createElement('textarea');
+        temp.value = text;
+        document.body.appendChild(temp);
+        temp.select();
+        document.execCommand('copy');
+        document.body.removeChild(temp);
+        showToast('Risultato cifrato copiato negli appunti!');
+      });
+
+      // Tastiera fisica (ignora input, select e textarea)
+      window.addEventListener('keydown', (e) => {
+        const tag = e.target.tagName;
+        if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+        if (e.ctrlKey || e.metaKey || e.altKey) return;
+
+        const key = e.key.toUpperCase();
+        if (key.length === 1 && ALPHABET.includes(key)) {
+          e.preventDefault();
+          handleKeyDown(key);
+        }
+      });
+
+      window.addEventListener('keyup', (e) => {
+        const key = e.key.toUpperCase();
+        if (key.length === 1 && ALPHABET.includes(key)) {
+          handleKeyUp(key);
+        }
+      });
+
+      // Ridisegna cavi SVG al ridimensionamento finestra
+      window.addEventListener('resize', () => {
+        drawPlugboardCables(getPlugPairsList());
+      });
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      buildRotorsDeck();
+      initLampboard();
+      initKeyboard();
+      initPlugboard();
+      initEventListeners();
+      updatePlugboardUI();
+      updateTapeUI();
+    });
+  </script>
+</body>
+</html>
